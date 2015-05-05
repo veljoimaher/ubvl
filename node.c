@@ -177,7 +177,6 @@ void isPresent (struct list *l, char *name)
 {
         struct node * node = (struct node *) malloc ( sizeof (struct node) );
 
-        node->type = 5;
         node->name = name;
 
         if ( list_find (l, node) != NULL)
