@@ -155,7 +155,7 @@ struct list * insert_elem (int type, struct list *list, char *name, int nr)
 	merged = list_merge_to_new (list, new_list);
 	if (merged == NULL)
 	{
-		printf ("merge failed\n");
+                fprintf (stderr, "error: Syntax failure: merge failed\n");
 		exit (3);
 	}
 	return merged;
@@ -180,5 +180,8 @@ void isPresent (struct list *l, char *name)
         node->name = name;
 
         if ( list_find (l, node) == NULL)
+        {
+                fprintf (stderr, "error: Syntax failure\n");
                 exit (3);
+        }
 }
