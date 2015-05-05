@@ -172,8 +172,16 @@ void list_dump (struct list *list)
 		cnt++;
 	}
 }
+
 void isPresent (struct list *l, char *name)
 {
+        struct node * node = (struct node *) malloc ( sizeof (struct node) );
 
+        node->type = 5;
+        node->name = name;
+
+        if ( list_find (l, node) != NULL)
+                exit (0);
+        else
+                exit (3);
 }
-
