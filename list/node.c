@@ -140,12 +140,16 @@ struct list * insert_elem (int type, struct list *list, char *name)
 {
 	struct node * node = (struct node *) malloc ( sizeof (struct node) );
 	struct list * new_list = list_create ();
+	struct list * merged;
 
 	node->type = type;
 	node->name = name;
 	
 	list_push_back (new_list, node);
-	return list_merge_to_new (list, new_list);
+	merged = list_merge_to_new (list, new_list);
+	if (merged == NULL)
+		exit (3);
+	return merged;
 }
 
 void list_dump (struct list *list)
