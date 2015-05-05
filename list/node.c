@@ -135,6 +135,19 @@ struct node * list_find (struct list *list, struct node *node)
 	return NULL;
 }
 
+// insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@);
+struct list * insert_elem (int type, struct list *list, char *name)
+{
+	struct node * node = (struct node *) malloc ( sizeof (struct node) );
+	struct list * new_list = list_create ();
+
+	node->type = type;
+	node->name = name;
+	
+	list_push_back (new_list, node);
+	return list_merge_to_new (list, new_list);
+}
+
 void list_dump (struct list *list)
 {
 	int cnt = 0;

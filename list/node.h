@@ -32,5 +32,6 @@ struct list * list_push_back (struct list *list, struct node *node);
 void list_dump (struct list *l);
 struct node * list_find (struct list *list, struct node *node);
 struct list * list_merge_to_new (struct list *first, struct list *second);
+struct list * insert_elem (int type, struct list *list, char *name);
 
 #endif

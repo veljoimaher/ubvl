@@ -67,7 +67,12 @@ int main (void)
 	else
 		printf ("duplicate entries while trying to merge\n");
 
+	printf ("testing insert_elem() \n");
+	struct list *new_merged = insert_elem (VARIABLE, merged, "testname");
+	list_dump (new_merged);
+	free (new_merged);
 	free (merged);
+
 	printf ("now testing merge with duplicate NAME\n");
 	tmp_node = list_back (ll_second);
 	tmp_node->name = "ime";
