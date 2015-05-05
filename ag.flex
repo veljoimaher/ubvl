@@ -2,6 +2,8 @@
 %{
 #include <stdio.h>
 #include "y.tab.h"
+
+#define lexeme strcpy ((char *) malloc (yyleng+1), yytext)
 %}
 
 ID      [a-zA-Z][a-zA-Z0-9]*
@@ -47,7 +49,8 @@ islist  return t_islist;
 isfun   return t_isfun;
 
 {ID}    { 
-                return ident; @{ @ident.name@ = strdup(yytext); @}
+                /*return ident; @{ @ident.name@ = strdup(yytext); @} */
+                return ident; @{ @ident.name@ = lexeme; @}
         }
 {ASGN}  {
                 return t_assign;

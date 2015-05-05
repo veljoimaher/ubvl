@@ -56,7 +56,7 @@ Def             : ident '=' Lambda
                                  * IF @ident.name@ not present, add new element with name = @ident.name@
                                  */
                                 @i @Def.sdef@ = insert_elem (DEFINITION, merge_list (@Def.idef@, @Lambda.sdef@), @ident.name@); 
-                                @i @Lambda.idef@ = @Def.idef@;
+                                @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@);
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
