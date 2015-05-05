@@ -54,8 +54,9 @@ Def             : ident '=' Lambda
                                  * (e.g. does not modify the list that is given as a parameter)
                                  * IF @ident.name@ already present, exit (1)
                                  * IF @ident.name@ not present, add new element with name = @ident.name@
+                                        @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@);
                                  */
-                                @i @Def.sdef@ = insert_elem (DEFINITION, merge_list (@Def.idef@, @Lambda.sdef@), @ident.name@); 
+                                @i @Def.sdef@ = insert_elem (DEFINITION, list_merge_to_new (@Def.idef@, @Lambda.sdef@), @ident.name@); 
                                 @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@);
                         @}
                 ;
@@ -69,7 +70,7 @@ Lambda          : t_fun ident t_assign Expr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
                                 @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@); 
-                                @i @Lambda.sdef@ = insert_elem (FUNCTION, merge_list (@Lambda.idef@, @LetExpr.let@), @ident.name@);
+                                @i @Lambda.sdef@ = insert_elem (FUNCTION, list_merge_to_new (@Lambda.idef@, @LetExpr.let@), @ident.name@);
                         @}
                 ;
 LetExpr         : t_let ident '=' Expr t_in Expr t_end
