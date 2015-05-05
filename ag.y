@@ -62,21 +62,21 @@ Def             : ident '=' Lambda
                                         @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@);
                                 @i @Def.sdef@ = insert_elem (DEFINITION, list_merge_to_new (@Def.idef@, @Lambda.sdef@), @ident.name@); 
                                  */
-                                @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 0); 
-                                @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@), 1;
+                                @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@); 
+                                @i @Lambda.idef@ = @Def.idef@;
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 2); 
-                                @i @Lambda.sdef@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 3);
+                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@); 
+                                @i @Lambda.sdef@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@);
                         @}
                 | t_fun ident t_assign LetExpr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 4); 
-                                @i @Lambda.sdef@ = insert_elem (FUNCTION, list_merge_to_new (@Lambda.idef@, @LetExpr.let@), @ident.name@, 5);
+                                @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@); 
+                                @i @Lambda.sdef@ = insert_elem (FUNCTION, list_merge_to_new (@Lambda.idef@, @LetExpr.let@), @ident.name@);
                         @}
                 ;
 LetExpr         : t_let ident '=' Expr t_in Expr t_end
@@ -85,8 +85,8 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
                                 @i @Expr.variable@ = @LetExpr.variable@;
 
                                 /* @Expr.2.variable@ gets everything from before (@Expr.0.variable@) and a new element */
-                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 6);
-                                @i @LetExpr.let@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 7);
+                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@);
+                                @i @LetExpr.let@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@);
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
