@@ -75,7 +75,7 @@ Lambda          : t_fun ident t_assign Expr t_end
                 | t_fun ident t_assign LetExpr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @Lambda.sdef@ = insert_elem (FUNCTION, list_merge_to_new (@Lambda.idef@, @LetExpr.let@), @ident.name@, 2);
+                                @i @Lambda.sdef@ = @LetExpr.let@;
                                 @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 3); 
                         @}
                 ;
