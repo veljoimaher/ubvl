@@ -21,9 +21,15 @@ CMNT    \/\/.*
 {DIGIT} {
                 return num; @{ @num.val@ = strtol (yytext, NULL, 10); @}
         }
-{KEY}   { 
-                return (char) yytext[0];
-        } 
+";"     return ';';
+"+"     return '+';
+"-"     return '-';
+"*"     return '*';
+"."     return '.';
+"<"     return '<';
+"="     return '=';
+"("     return '(';
+")"     return ')';
 
 fun     return t_fun;
 if      return t_if;
