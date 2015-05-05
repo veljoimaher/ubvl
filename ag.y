@@ -69,14 +69,14 @@ Def             : ident '=' Lambda
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 1); 
                                 @i @Lambda.sdef@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 2);
+                                @i @Expr.variable@ = @Lambda.idef@;
                         @}
                 | t_fun ident t_assign LetExpr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 3); 
                                 @i @Lambda.sdef@ = insert_elem (FUNCTION, list_merge_to_new (@Lambda.idef@, @LetExpr.let@), @ident.name@, 4);
+                                @i @LetExpr.variable@ = @Lambda.idef@;
                         @}
                 ;
 LetExpr         : t_let ident '=' Expr t_in Expr t_end
@@ -85,8 +85,8 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
                                 @i @Expr.variable@ = @LetExpr.variable@;
 
                                 /* @Expr.2.variable@ gets everything from before (@Expr.0.variable@) and a new element */
-                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 5);
                                 @i @LetExpr.let@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 6);
+                                @i @Expr.1.variable@ = @LetExpr.variable@;
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end

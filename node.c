@@ -179,8 +179,6 @@ void isPresent (struct list *l, char *name)
 
         node->name = name;
 
-        if ( list_find (l, node) != NULL)
-                exit (0);
-        else
+        if ( list_find (l, node) == NULL)
                 exit (3);
 }
