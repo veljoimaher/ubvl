@@ -63,7 +63,11 @@ Def             : ident '=' Lambda
                                 @i @Def.sdef@ = insert_elem (DEFINITION, list_merge_to_new (@Def.idef@, @Lambda.sdef@), @ident.name@); 
                                  */
                                 @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@); 
+<<<<<<< HEAD
                                 @i @Lambda.idef@ = @Def.idef@;
+=======
+                                @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@); 
+>>>>>>> b0be6b516e06df1b15bfa3cf671b7e422c381de6
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
