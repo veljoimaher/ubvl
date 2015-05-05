@@ -1,3 +1,6 @@
+CC=gcc
+CFLAGS=-Wall
+
 all: ag
 
 ag: lex.yy.o y.tab.o node.o

@@ -136,7 +136,7 @@ struct node * list_find (struct list *list, struct node *node)
 	return NULL;
 }
 
-struct list * insert_elem (int type, struct list *list, char *name)
+struct list * insert_elem (int type, struct list *list, char *name, int nr)
 {
 	struct node * node = (struct node *) malloc ( sizeof (struct node) );
 	struct list * new_list = list_create ();
@@ -144,7 +144,8 @@ struct list * insert_elem (int type, struct list *list, char *name)
 
 	node->type = type;
 	node->name = name;
-	
+	node->val = nr;
+
 	list_push_back (new_list, node);
 	printf ("trying to merge\n");
 	list_dump (list);
