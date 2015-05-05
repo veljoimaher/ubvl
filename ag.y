@@ -34,16 +34,21 @@ main()
 @attributes { struct list *variable; struct list *let; } LetExpr 
 @attributes { struct list *variable; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
 @attributes { struct list *idef; struct list *sdef; } Def Lambda
+@attributes { struct list *idef; } Program
 @attributes { int val; } num
 
 @traversal @postorder err
 
 %%
 Program         : 
+                        @{
+                                @i @Program.0.idef@ = list_create ();     
+                        @}
                 | Program Def ';'
                         @{
                                 /* Lambda definition inherited attribute (goes downwards) */
-                                @i @Def.idef@ = @Def.sdef@;     
+                                @i @Program.0.idef@ = list_merge_to_new (@Def.sdef@, @Program.1.idef@);    
+                                @i @Def.idef@ = @Program.0.idef@;     
                         @}
                 ;
 Def             : ident '=' Lambda
@@ -55,8 +60,9 @@ Def             : ident '=' Lambda
                                  * IF @ident.name@ already present, exit (1)
                                  * IF @ident.name@ not present, add new element with name = @ident.name@
                                         @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@);
-                                 */
                                 @i @Def.sdef@ = insert_elem (DEFINITION, list_merge_to_new (@Def.idef@, @Lambda.sdef@), @ident.name@); 
+                                 */
+                                @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@); 
                                 @i @Lambda.idef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@);
                         @}
                 ;
