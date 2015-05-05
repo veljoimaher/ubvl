@@ -146,9 +146,17 @@ struct list * insert_elem (int type, struct list *list, char *name)
 	node->name = name;
 	
 	list_push_back (new_list, node);
+	printf ("trying to merge\n");
+	list_dump (list);
+	printf ("and\n");
+	list_dump (new_list);
+	printf ("\n");
 	merged = list_merge_to_new (list, new_list);
 	if (merged == NULL)
+	{
+		printf ("merge failed\n");
 		exit (3);
+	}
 	return merged;
 }
 

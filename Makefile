@@ -22,4 +22,4 @@ lex.yy.o: lex.yy.c y.tab.h node.h
 	gcc -c -ansi -pedantic lex.yy.c -D_GNU_SOURCE
 
 clean:
-	rm -f ag *.o oxout.* lex.yy.c y.tab.*
+	rm -f ag *.o oxout.* lex.yy.c y.tab.* *~

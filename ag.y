@@ -47,8 +47,8 @@ Program         :
                 | Program Def ';'
                         @{
                                 /* Lambda definition inherited attribute (goes downwards) */
-                                @i @Program.0.sdef@ = list_merge_to_new (@Def.sdef@, @Program.1.sdef@);    
-                                @i @Def.idef@ = @Program.0.idef@;     
+                                @i @Program.0.sdef@ = @Def.sdef@; 
+                                @i @Def.idef@ = @Program.1.sdef@; 
                         @}
                 ;
 Def             : ident '=' Lambda
