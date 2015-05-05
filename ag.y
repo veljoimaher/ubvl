@@ -31,8 +31,7 @@ main()
 @autoinh variable
 @attributes { char *name; } ident
 @attributes { struct list *variable; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
-@attributes { struct list *function; } Lambda
-@attributes { struct list *idef; struct list *sdef; } Def
+@attributes { struct list *idef; struct list *sdef; } Def Lambda
 @attributes { int val; } num
 
 @traversal @postorder err
@@ -54,14 +53,15 @@ Def             : ident '=' Lambda
                                  * IF @ident.name@ already present, exit (1)
                                  * IF @ident.name@ not present, add new element with name = @ident.name@
                                  */
-                                @i @Def.sdef@ = insert_elem (DEFINITION, @Def.idef@, @ident.name@); 
-                                @i @Lambda.function@ = @Def.idef@;
+                                @i @Def.sdef@ = insert_elem (DEFINITION, merge_list (@Def.idef@, @Lambda.sdef@), @ident.name@); 
+                                @i @Lambda.idef@ = @Def.idef@;
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.function@, @ident.name@); 
+                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@); 
+                                @i @Lambda.sdef@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@);
                         @}
                 ;
 
@@ -75,7 +75,7 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                 | Lambda
                         @{
                                 /* simply pass on what we already have */
-                                @i @Lambda.function@ = @Expr.variable@;
+                                @i @Lambda.idef@ = @Expr.variable@;
                         @}
                 | t_let ident '=' Expr t_in Expr t_end
                         @{
