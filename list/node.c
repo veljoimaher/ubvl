@@ -135,7 +135,6 @@ struct node * list_find (struct list *list, struct node *node)
 	return NULL;
 }
 
-// insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@);
 struct list * insert_elem (int type, struct list *list, char *name)
 {
 	struct node * node = (struct node *) malloc ( sizeof (struct node) );
