@@ -34,7 +34,7 @@ main()
 @attributes { struct list *variable; struct list *let; } LetExpr 
 @attributes { struct list *variable; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
 @attributes { struct list *idef; struct list *sdef; } Def Lambda
-@attributes { struct list *idef; } Program
+@attributes { struct list *sdef; } Program
 @attributes { int val; } num
 
 @traversal @postorder err
@@ -42,12 +42,12 @@ main()
 %%
 Program         : 
                         @{
-                                @i @Program.0.idef@ = list_create ();     
+                                @i @Program.0.sdef@ = list_create ();     
                         @}
                 | Program Def ';'
                         @{
                                 /* Lambda definition inherited attribute (goes downwards) */
-                                @i @Program.0.idef@ = list_merge_to_new (@Def.sdef@, @Program.1.idef@);    
+                                @i @Program.0.sdef@ = list_merge_to_new (@Def.sdef@, @Program.1.sdef@);    
                                 @i @Def.idef@ = @Program.0.idef@;     
                         @}
                 ;
