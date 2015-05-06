@@ -38,18 +38,24 @@ main()
 @attributes { int val; } num
 
 @traversal @preorder err
+@traversal @postorder dbg
 
 %%
 Program         : 
                         @{
                                 @i @Program.0.sdef@ = list_create ();     
                         @}
-                | Program Def ';'
+                | Def ';' Program
                         @{
                                 /* Lambda definition inherited attribute (goes downwards) */
-                                @i @Program.0.sdef@ = @Def.sdef@; 
-                                @i @Def.idef@ = @Program.0.sdef@; 
-                        @}
+				@i @Program.0.sdef@ = list_merge_to_new (@Def.sdef@, @Program.1.sdef@); 
+                                @i @Def.idef@ = @Program.0.sdef@;
+				/* 
+				@err printf ("dumping lists from ident = Lambda\n");
+				@err list_dump (@Program.0.sdef@);
+				@err list_dump (@Def.sdef@);
+	*/
+			@}
                 ;
 Def             : ident '=' Lambda
                         @{      
