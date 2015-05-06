@@ -48,7 +48,7 @@ Program         :
                         @{
                                 /* Lambda definition inherited attribute (goes downwards) */
                                 @i @Program.0.sdef@ = @Def.sdef@; 
-                                @i @Def.idef@ = @Program.1.sdef@; 
+                                @i @Def.idef@ = @Program.0.sdef@; 
                         @}
                 ;
 Def             : ident '=' Lambda
