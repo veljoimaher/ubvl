@@ -70,13 +70,13 @@ Lambda          : t_fun ident t_assign Expr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
                                 @i @Lambda.sdef@ = list_create ();
-                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 2);
+                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 1);
                         @}
                 | t_fun ident t_assign LetExpr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
                                 @i @Lambda.sdef@ = @LetExpr.let@;
-                                @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 3); 
+                                @i @LetExpr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 2); 
                         @}
                 ;
 LetExpr         : t_let ident '=' Expr t_in Expr t_end
@@ -85,8 +85,8 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
                                 @i @Expr.variable@ = @LetExpr.variable@;
 
                                 /* @Expr.2.variable@ gets everything from before (@Expr.0.variable@) and a new element */
-                                @i @LetExpr.let@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 4);
-                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 5);
+                                @i @LetExpr.let@ = insert_elem (VARIABLE, list_create (), @ident.name@, 3);
+                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 4);
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
