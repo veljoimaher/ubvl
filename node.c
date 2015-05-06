@@ -91,7 +91,7 @@ struct list * list_merge_to_new (struct list *f, struct list *s)
 	struct list *new = list_create ();
 	struct list *new_p = new;
 
-        while ( (fn = list_next (fn)) != list_end (f))
+	while ( (fn = list_next (fn)) != list_end (f))
         {
 		tmp_n = (struct node *) malloc ( sizeof (struct node) );
 		tmp_n->name = fn->name;
@@ -166,7 +166,7 @@ struct list * insert_elem (int type, struct list *list, char *name, int nr)
 	node->val = nr;
 
 	list_push_back (new_list, node);
-	printf ("trying to merge\n");
+	printf ("insert_elem -> trying to merge\n");
 	list_dump (list);
 	printf ("and\n");
 	list_dump (new_list);
@@ -204,6 +204,6 @@ void isPresent (struct list *l, char *name)
         if ( list_find_any_type (l, node) == NULL)
         {
                 fprintf (stderr, "error: Syntax failure\n");
-                exit (3);
+                exit (3); 
         }
 }
