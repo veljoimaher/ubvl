@@ -2,7 +2,7 @@
 #define __NODE_H__
 
 #define DEFINITION  0
-#define FUNCTION    1
+#define PARAMETER    1
 #define VARIABLE    2
 
 struct node 

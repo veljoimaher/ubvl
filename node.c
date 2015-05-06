@@ -127,6 +127,25 @@ struct node * list_find (struct list *list, struct node *node)
 
 	while ( (n = list_next (n)) != list_end (list))
 	{
+		if (n->name != NULL && n->type == np->type)
+		{
+			if (strncmp (n->name, np->name, strlen (np->name)) == 0)
+				return n;
+		}
+	}
+	return NULL;
+}
+
+struct node * list_find_any_type (struct list *list, struct node *node)
+{
+	struct node *n = list_head (list);
+	struct node *np = node;
+
+	if (np->name == NULL)
+		return NULL;
+
+	while ( (n = list_next (n)) != list_end (list))
+	{
 		if (n->name != NULL)
 		{
 			if (strncmp (n->name, np->name, strlen (np->name)) == 0)
@@ -182,7 +201,7 @@ void isPresent (struct list *l, char *name)
         printf ("trying to find: '%s' in following list\n", name);
 	list_dump (l);
 
-        if ( list_find (l, node) == NULL)
+        if ( list_find_any_type (l, node) == NULL)
         {
                 fprintf (stderr, "error: Syntax failure\n");
                 exit (3);
