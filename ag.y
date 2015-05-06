@@ -37,7 +37,7 @@ main()
 @attributes { struct list *sdef; } Program
 @attributes { int val; } num
 
-@traversal @postorder err
+@traversal @preorder err
 
 %%
 Program         : 
@@ -69,8 +69,8 @@ Def             : ident '=' Lambda
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
                                 /* @Expr.variable@ gets @Lambda.function@ from before and new function def here */
-                                @i @Lambda.sdef@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 1);
-                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 11);
+                                @i @Lambda.sdef@ = list_create ();
+                                @i @Expr.variable@ = insert_elem (FUNCTION, @Lambda.idef@, @ident.name@, 2);
                         @}
                 | t_fun ident t_assign LetExpr t_end
                         @{
