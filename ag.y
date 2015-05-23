@@ -5,6 +5,8 @@
 #include "node.h"
 #define YYDEBUG 1
 
+struct list *global;
+
 void yyerror(const char *str)
 {
         fprintf(stderr, "error: %s\n", str);
@@ -18,11 +20,12 @@ main()
         return 0;
 }
 
+int cnt = 0;
  %}
 %token t_end t_isnum t_let t_fun t_not t_if t_else ident t_assign t_in t_tail t_equals t_and t_head num t_isfun t_islist t_then
 
 
-%start Program
+%start StartProgram
 
 /*
 @autosyn  name
@@ -34,45 +37,44 @@ main()
 @attributes { struct list *variable; struct list *let; } LetExpr 
 @attributes { struct list *variable; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
 @attributes { struct list *idef; struct list *sdef; } Def Lambda
-@attributes { struct list *sdef; } Program
+@attributes { struct list *idef; } Program
 @attributes { int val; } num
 
-@traversal @preorder err
 @traversal @postorder dbg
+@traversal @preorder err
 
 %%
+StartProgram	: Program
+			@{	
+				@i @Program.idef@ = list_create ();
+			@}
+		;
 Program         : 
                         @{
-                                @i @Program.0.sdef@ = list_create ();
-				@dbg printf ("\t PROGRAM START \n");
                         @}
                 | Def ';' Program
                         @{
-				@err printf ("\t Program -> Def ; Program \n");
-				@i @Program.0.sdef@ = list_merge_to_new (@Def.sdef@, @Program.1.sdef@); 
-                                @i @Def.idef@ = @Program.0.sdef@;
+                                /* can't find a way to propagate father nodes global variables down the drain.. :( */
+                                /*
+				@i @Program.0.sdef@ = list_merge (@Def.sdef@, @Program.1.sdef@); 
+				@i @Def.idef@ = list_merge (@Program.0.sdef@, @Program.1.idef@);
+				@i @Program.0.idef@ = @Program.1.sdef@; 
+				*/
+				@i @Program.1.idef@ = @Def.sdef@;
+                                @i @Def.idef@ = list_merge (@Program.0.idef@, @Def.sdef@);
 			@}
                 ;
 Def             : ident '=' Lambda
                         @{     
-				@err printf ("\t Def: ident = Lambda\n"); 
                                 @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 10); 
                                 @i @Lambda.idef@ = @Def.idef@;
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
-				@err printf ("\t Lambda: fun ident = Expr \n");
 				@i @Lambda.sdef@ = list_create (); 
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
                         @}
-		/*
-		| t_fun ident t_assign LetExpr t_end
-                        @{
-                                @i @Lambda.sdef@ = @LetExpr.let@;
-                                @i @LetExpr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 2); 
-                        @}
-		*/
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @{

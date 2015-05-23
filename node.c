@@ -81,6 +81,36 @@ struct list * list_push_back (struct list *list, struct node *node)
  * FROM HERE ON FUNCTIONS FOR UEBERSETZERBAU
  */
 
+/* quick and dirty but VERY expensive */
+struct list * list_merge (struct list *f, struct list *s)
+{
+	struct node *tmp_n;
+	struct node *sn = list_head (s);
+	struct list *new_p = f;
+
+	while ( (sn = list_next (sn)) != list_end (s))
+        {
+		tmp_n = (struct node *) malloc ( sizeof (struct node) );
+		tmp_n->name = sn->name;
+		tmp_n->val = sn->val;
+		tmp_n->type = sn->type;
+
+		if ( list_find (new_p, tmp_n) == NULL) 
+		{
+			printf ("merging: %s in\n", tmp_n->name);	
+			list_dump (f);
+			list_push_back (f, tmp_n);
+		}
+		else
+		{
+			exit (3);
+		}
+
+        }
+
+	return f;
+}
+
 
 /* quick and dirty but VERY expensive */
 struct list * list_merge_to_new (struct list *f, struct list *s)
@@ -107,8 +137,8 @@ struct list * list_merge_to_new (struct list *f, struct list *s)
 		tmp_n->val = sn->val;
 		tmp_n->type = sn->type;
 
-		if ( list_find (new_p, sn) != NULL) 
-			return NULL;
+		if ( list_find_any_type (new_p, sn) != NULL) 
+			exit(3);
 
 		list_push_back (new, tmp_n);
         }
