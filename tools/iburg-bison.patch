@@ -1,0 +1,66 @@
+diff -Naur iburg.orig/gram.y iburg/gram.y
+--- iburg.orig/gram.y	1993-07-21 00:08:39.000000000 +0200
++++ iburg/gram.y	2004-05-01 12:38:44.000000000 +0200
+@@ -1,14 +1,26 @@
+ %{
+ #include <stdio.h>
++#include <stdarg.h>
++#include <ctype.h>
++#include <string.h>
+ #include "iburg.h"
++
+ static char rcsid[] = "$Id: gram.y,v 1.2 93/02/23 07:22:21 drh Exp $";
++
++int errcnt = 0;
++FILE *infp = NULL;
++FILE *outfp = NULL;
++static char buf[BUFSIZ], *bp = buf;
++static int yylineno = 0;
++static int ppercent = 0;
++
+ %}
+ %union {
+ 	int n;
+ 	char *string;
+ 	Tree tree;
+ }
+-%term TERM
++%term TTERM
+ %term START
+ %term PPERCENT
+ 
+@@ -26,7 +38,7 @@
+ 	| decls decl
+ 	;
+ 
+-decl	: TERM  blist '\n'
++decl	: TTERM  blist '\n'
+ 	| START lhs   '\n'		{
+ 		if (nonterm($2)->number != 1)
+ 			yyerror("redeclaration of the start symbol\n");
+@@ -57,16 +69,6 @@
+ 	| '(' INT ')'			{ $$ = $2; }
+ 	;
+ %%
+-#include <stdarg.h>
+-#include <ctype.h>
+-#include <string.h>
+-
+-int errcnt = 0;
+-FILE *infp = NULL;
+-FILE *outfp = NULL;
+-static char buf[BUFSIZ], *bp = buf;
+-static int yylineno = 0;
+-static int ppercent = 0;
+ 
+ static int get(void) {
+ 	if (*bp == 0) {
+@@ -123,7 +125,7 @@
+ 		} else if (c == '%' && strncmp(bp, "term", 4) == 0
+ 		&& isspace(bp[4])) {
+ 			bp += 4;
+-			return TERM;
++			return TTERM;
+ 		} else if (c == '%' && strncmp(bp, "start", 5) == 0
+ 		&& isspace(bp[5])) {
+ 			bp += 5;
