@@ -95,19 +95,11 @@ struct list * list_merge (struct list *f, struct list *s)
 		tmp_n->val = sn->val;
 		tmp_n->type = sn->type;
 
-		if ( list_find (new_p, tmp_n) == NULL) 
-		{
-			printf ("merging: %s in\n", tmp_n->name);	
-			list_dump (f);
-			list_push_back (f, tmp_n);
-		}
-		else
-		{
+		if ( list_find_any_type (new_p, sn) != NULL) 
 			exit (3);
-		}
-
+			
+		list_push_back (f, tmp_n);
         }
-
 	return f;
 }
 
@@ -142,8 +134,6 @@ struct list * list_merge_to_new (struct list *f, struct list *s)
 
 		list_push_back (new, tmp_n);
         }
-
-
 	return new;
 }
 
@@ -202,11 +192,12 @@ struct list * insert_elem (int type, struct list *list, char *name, int nr)
 	list_dump (new_list);
 	printf ("\n");
 	merged = list_merge_to_new (list, new_list);
-	if (merged == NULL)
+	/*if (merged == NULL)
 	{
                 fprintf (stderr, "error: Syntax failure: merge failed\n");
 		exit (3);
 	}
+	*/
 	return merged;
 }
 
