@@ -1,0 +1,21 @@
+%{
+/* vim: filetype=c
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+
+#include "tree.h"
+
+%}
+
+%start stmt
+%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19
+
+
+%%
+
+stmt: ASGN (NULL,NULL)             # 0 # printf("Test\n");
+
+
+%%

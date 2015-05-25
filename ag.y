@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "node.h"
+#include "tree.h"
 #define YYDEBUG 1
 
 struct list *global;
@@ -21,7 +22,7 @@ main()
 }
 
 int cnt = 0;
- %}
+%}
 %token t_end t_isnum t_let t_fun t_not t_if t_else ident t_assign t_in t_tail t_equals t_and t_head num t_isfun t_islist t_then
 
 
@@ -32,16 +33,16 @@ int cnt = 0;
 @autoinh  definition variable
 */
 @autoinh variable
-@autosyn let
+@autosyn let tn
 @attributes { char *name; } ident
 @attributes { struct list *variable; struct list *let; } LetExpr 
-@attributes { struct list *variable; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
-@attributes { struct list *idef; struct list *sdef; } Def Lambda
+@attributes { struct list *variable; struct treenode *tn; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
+@attributes { struct list *idef; struct list *sdef; struct treenode *tn; } Def Lambda
 @attributes { struct list *idef; } Program
 @attributes { int val; } num
 
-@traversal @postorder dbg
 @traversal @preorder err
+@traversal @preorder codegen
 
 %%
 StartProgram	: Program
@@ -54,26 +55,23 @@ Program         :
                         @}
                 | Def ';' Program
                         @{
-                                /* can't find a way to propagate father nodes global variables down the drain.. :( */
-                                /*
-				@i @Program.0.sdef@ = list_merge (@Def.sdef@, @Program.1.sdef@); 
-				@i @Def.idef@ = list_merge (@Program.0.sdef@, @Program.1.idef@);
-				@i @Program.0.idef@ = @Program.1.sdef@; 
-				*/
 				@i @Program.1.idef@ = @Def.sdef@;
                                 @i @Def.idef@ = list_merge (@Program.0.idef@, @Def.sdef@);
+                                @codegen invoke_burm(@Def.tn@);
 			@}
-                ;
+                
 Def             : ident '=' Lambda
                         @{     
                                 @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 10); 
                                 @i @Lambda.idef@ = @Def.idef@;
+                                @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
 				@i @Lambda.sdef@ = list_create (); 
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
+                                @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, @Expr.variable@), @Expr.tn@); 
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
@@ -82,25 +80,55 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
                                 @i @Expr.2.variable@ = @Expr.0.variable@;
                                 @i @Expr.3.variable@ = @Expr.0.variable@;
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
                         @}
                 | Lambda
                         @{
                                 /* simply pass on what we already have */
                                 @i @Lambda.idef@ = @Expr.variable@;
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
                         @}
 		| LetExpr
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Ops
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term '+' Term PlusTerm
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term '-' Term
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term '*' Term MulTerm
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term t_and Term AndTerm
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term '.' Term DotTerm
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term '<' Term
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Term '=' Term
+                        @{
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                        @}
                 | Expr Term
                         @{
                                 /* simply pass on what we already have */
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
+                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
                         @}
                 ;
 
@@ -125,22 +153,56 @@ Ops             : t_not Ops
                 | Term
                 ;
 DotTerm         : 
+                @{
+                                @i @DotTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 | DotTerm '.' Term
+                @{
+                                @i @DotTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 ;
 AndTerm         : 
+                @{
+                                @i @AndTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
+
                 | AndTerm t_and Term
+                @{
+                                @i @AndTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 ;
 PlusTerm        : 
+                @{
+                                @i @PlusTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
+
                 | PlusTerm '+' Term
+                @{
+                                @i @PlusTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 ;
 MulTerm         : 
+                @{
+                                @i @MulTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
+
                 | MulTerm '*' Term
+                @{
+                                @i @MulTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 ;
 Term            : '(' Expr ')'
+                @{
+                                @i @Term.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 | num
+                @{
+                                @i @Term.tn@ = new_op_node (IF, NULL, NULL);
+                @}
                 | ident
                         @{
                                 @err isPresent (@Term.variable@, @ident.name@);
+                                @i @Term.tn@ = new_op_node (IF, NULL, NULL);
                         @}
                 ;
 %%

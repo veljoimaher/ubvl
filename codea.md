@@ -10,17 +10,18 @@ should work.
 
 Meaning these productions are valid:
 
-Program: { Def ’;’ }  
+Program: { Def ’;’ } 
        ;  
  
-Def: ident = Lambda  
-   ;  
+Def: ident = Lambda 
+   ; 
  
-Lambda: fun ident ’->’ Expr end  
+Lambda: fun ident ’->’ Expr end 
       ;  
  
-Expr: Term  
+Expr: Term 
     | { not | head | tail | isnum | islist | isfun } Term  
+    | Term
     | Term { ’+’ Term }  
     | Term ’-’ Term  
     | Term { ’*’ Term }  
@@ -29,6 +30,6 @@ Expr: Term
     | Term ( ’<’ | ’=’ ) Term  
     ;  
  
-Term: ’(’ Expr ’)’  
+Term: ’(’ Expr ’)’ 
     | num  
     | ident                   /* Variablenverwendung */  
