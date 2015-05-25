@@ -48,4 +48,4 @@ codea.c: codea.bfe
 #	bfe < $(NAME).bfe | iburg > $(NAME)_iburg.c
 
 clean:
-	rm -f ag *.o oxout.* lex.yy.c y.tab.* *~
+	rm -f ag codea.c *.o oxout.* lex.yy.c y.tab.* *~
