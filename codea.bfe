@@ -10,12 +10,14 @@
 %}
 
 %start stmt
-%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19
+%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 DUMMY=20 DOT=21
 
 
 %%
 
-stmt: ASGN (NULL,NULL)             # 0 # printf("Test\n");
+stmt: ASGN (reg, lambda)           # 1 # printf("stmt bnode op: %d\n", bnode->op);
+lambda: LASGN (reg, reg)           # 1 # printf("lambda bnode op: %d\n", bnode->op);
 
-
+reg: IDENT                      # 0
+reg: NUM                        # 0
 %%

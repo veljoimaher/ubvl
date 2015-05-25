@@ -5,7 +5,7 @@
 
 enum {
         NOT=1, HEAD, TAIL, ISNUM, ISLIST, ISFUN, ADD, SUB, MUL, AND, LESS, EQ, IDENT, NUM, ASGN,
-        LASGN, THEN, ELSE, IF
+        LASGN, THEN, ELSE, IF, DUMMY, DOT
 };
 
 #ifdef USE_IBURG
@@ -27,11 +27,12 @@ struct treenode {
         int val;
 
 };
+typedef struct treenode treenode_ptr;
 
 /* 
  * iburg macros 
  */
-#define NODEPTR_TYPE struct treenode *
+#define NODEPTR_TYPE treenode_ptr *
 #define OP_LABEL(p) ( (p)->op )
 #define LEFT_CHILD(p) ( (p)->left )
 #define RIGHT_CHILD(p) ( (p)->right )

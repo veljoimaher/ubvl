@@ -1,11 +1,10 @@
 CC=gcc
 CFLAGS=-Wall
-NAME=codea
 
-all: ag
+all: codea
 
-ag: lex.yy.o y.tab.o node.o tree.o
-	gcc -o ag node.o tree.o lex.yy.o y.tab.o codea.o -lfl
+codea: lex.yy.o y.tab.o node.o tree.o
+	gcc -o codea node.o tree.o lex.yy.o y.tab.o codea.o -lfl
 
 tree.o: tree.c tree.h codea.o
 	gcc -c -ansi -pedantic -Wall tree.c -D_GNU_SOURCE
@@ -48,4 +47,4 @@ codea.c: codea.bfe
 #	bfe < $(NAME).bfe | iburg > $(NAME)_iburg.c
 
 clean:
-	rm -f ag codea.c *.o oxout.* lex.yy.c y.tab.* *~
+	rm -f ag codea.c codea *.o oxout.* lex.yy.c y.tab.* *~

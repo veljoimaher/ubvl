@@ -41,8 +41,7 @@ int cnt = 0;
 @attributes { struct list *idef; } Program
 @attributes { int val; } num
 
-@traversal @preorder err
-@traversal @preorder codegen
+@traversal @preorder err codegen
 
 %%
 StartProgram	: Program
@@ -86,49 +85,49 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @{
                                 /* simply pass on what we already have */
                                 @i @Lambda.idef@ = @Expr.variable@;
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (THEN, NULL, NULL);
                         @}
 		| LetExpr
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (ELSE, NULL, NULL);
                         @}
                 | Ops
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (ISNUM, NULL, NULL);
                         @}
                 | Term '+' Term PlusTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (ADD, NULL, NULL);
                         @}
                 | Term '-' Term
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (SUB, NULL, NULL);
                         @}
                 | Term '*' Term MulTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (MUL, NULL, NULL);
                         @}
                 | Term t_and Term AndTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (AND, NULL, NULL);
                         @}
                 | Term '.' Term DotTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (DOT, NULL, NULL);
                         @}
                 | Term '<' Term
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (LESS, NULL, NULL);
                         @}
                 | Term '=' Term
                         @{
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (EQ, NULL, NULL);
                         @}
                 | Expr Term
                         @{
                                 /* simply pass on what we already have */
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (EQ, NULL, NULL);
                         @}
                 ;
 
@@ -154,41 +153,41 @@ Ops             : t_not Ops
                 ;
 DotTerm         : 
                 @{
-                                @i @DotTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @DotTerm.0.tn@ = new_op_node (DOT, NULL, NULL);
                 @}
                 | DotTerm '.' Term
                 @{
-                                @i @DotTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @DotTerm.0.tn@ = new_op_node (DOT, NULL, NULL);
                 @}
                 ;
 AndTerm         : 
                 @{
-                                @i @AndTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @AndTerm.0.tn@ = new_op_node (AND, NULL, NULL);
                 @}
 
                 | AndTerm t_and Term
                 @{
-                                @i @AndTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @AndTerm.0.tn@ = new_op_node (AND, NULL, NULL);
                 @}
                 ;
 PlusTerm        : 
                 @{
-                                @i @PlusTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @PlusTerm.0.tn@ = new_op_node (ADD, NULL, NULL);
                 @}
 
                 | PlusTerm '+' Term
                 @{
-                                @i @PlusTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @PlusTerm.0.tn@ = new_op_node (ADD, NULL, NULL);
                 @}
                 ;
 MulTerm         : 
                 @{
-                                @i @MulTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @MulTerm.0.tn@ = new_op_node (MUL, NULL, NULL);
                 @}
 
                 | MulTerm '*' Term
                 @{
-                                @i @MulTerm.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @MulTerm.0.tn@ = new_op_node (MUL, NULL, NULL);
                 @}
                 ;
 Term            : '(' Expr ')'
@@ -197,12 +196,12 @@ Term            : '(' Expr ')'
                 @}
                 | num
                 @{
-                                @i @Term.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Term.tn@ = new_num_node (@num.val@);
                 @}
                 | ident
                         @{
                                 @err isPresent (@Term.variable@, @ident.name@);
-                                @i @Term.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Term.tn@ = new_id_node (@ident.name@, @Term.variable@);
                         @}
                 ;
 %%

@@ -24,6 +24,7 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
         tree->val = 0;
         tree->name = "n/a";
 
+        treenode_dump (tree);
         return tree;
 }
 
@@ -34,7 +35,8 @@ struct treenode *new_id_node (char *id_name, struct list *ids)
         /* tree->reg = get_node_reg (id_name, ids);
          */
         tree->name = id_name;
-
+        
+        treenode_dump (tree);
         return tree;
 }
 
@@ -44,6 +46,7 @@ struct treenode *new_num_node (long num)
 
         tree->val = num;
 
+        treenode_dump (tree);
         return tree;
 }
 
@@ -59,4 +62,8 @@ void treenode_dump (struct treenode *tn)
         printf ("type: %d\n", tn->op);
         printf ("name: %s\n", tn->name);
         printf ("val: %d\n", tn->val);
+        if (tn->left != NULL)
+                printf ("left: %d\n", tn->left->op);
+        if (tn->right != NULL)
+                printf ("right: %d\n", tn->right->op);
 }
