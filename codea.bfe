@@ -15,7 +15,6 @@
 
 
 %%
-<<<<<<< HEAD
 
 stmt: ASGN (reg, lambda)                # 4 # printf("%s:\n", LEFT_CHILD(bnode)->name);
 
@@ -72,17 +71,6 @@ term: EQ (term, term)
 
 rc: num                                 # 0 #
 
-=======
-stmt: ASGN (reg, lambda)                # 4 # printf("stmt bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, rc)                 # 0 # printf("lambda bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, reg)		# 0 # printf ("lambda reg reg\n");
-
-rc: opnot                               # 0 #
-
-opnot: IDENT                            # 0 # printf ("not %s\n", bnode->name); 
-
-rc: num
->>>>>>> 5c096387b41e3f3904ba22954be597096f908fb1
 reg: IDENT                              # 0 # printf("IDENT\n");
 num: NUM                                # 0 # printf("NUM\n");
 
