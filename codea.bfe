@@ -26,7 +26,7 @@ num: NUM                                # 0 # printf("NUM\n");
 %%
 stmt: ASGN (reg, lambda)                # 0 # printf("stmt bnode op: %d\n", bnode->op);
 lambda: LASGN (reg, rc)                # 0 # printf("lambda bnode op: %d\n", bnode->op);
-
+lambda: LASGN (reg, reg)		# 0 # printf ("lambda reg reg\n");
 rc: num
 reg: IDENT                              # 0 # printf("IDENT\n");
 num: NUM                                # 0 # printf("NUM\n");

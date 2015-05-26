@@ -8,12 +8,8 @@ enum {
         LASGN, THEN, ELSE, IF, DUMMY, DOT
 };
 
-#ifdef USE_IBURG
 #ifndef BURM
         typedef struct burm_state *STATEPTR_TYPE;
-#endif
-#else
-#define STATEPTR_TYPE int
 #endif
 
 struct treenode {

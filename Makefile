@@ -29,22 +29,10 @@ lex.yy.o: lex.yy.c y.tab.h node.h
 
 # iburg
 codea.o: codea.c
-	gcc -ggdb -c -pedantic -Wall codea.c -DUSE_IBURG -D_GNU_SOURCE
+	gcc -ggdb -c -pedantic -Wall codea.c -D_GNU_SOURCE
 
 codea.c: codea.bfe
 	bfe < codea.bfe | iburg > codea.c
-
-#$(NAME)b: $(NAME)b.o lexer.o $(NAME)_iburg.o
-#	gcc -o $(NAME)b $(NAME)b.o $(NAME)_iburg.o lexer.o -lfl
-#
-#$(NAME)b.o: $(NAME).c $(NAME).h
-#	gcc -c -DUSE_IBURG $(NAME).c -o $(NAME)b.o
-#
-#$(NAME)_iburg.o: $(NAME)_iburg.c tree.h
-#	gcc -c -DUSE_IBURG -DBURM $(NAME)_iburg.c
-#
-#$(NAME)_iburg.c: $(NAME).bfe
-#	bfe < $(NAME).bfe | iburg > $(NAME)_iburg.c
 
 clean:
 	rm -f ag codea.c codea *.o oxout.* lex.yy.c y.tab.* *~
