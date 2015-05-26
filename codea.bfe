@@ -6,17 +6,8 @@
 #include <assert.h>
 #define BURM
 #include "tree.h"
-/*
-stmt: reg                               # 0 
-stmt: lambda                            # 0 
-stmt: asgn                              # 0 
-asgn: ASGN (reg, lambda)                # 0 # printf("stmt bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, rc)                # 0 # printf("lambda bnode op: %d\n", bnode->op);
 
-rc: num
-reg: IDENT                              # 0 # printf("IDENT\n");
-num: NUM                                # 0 # printf("NUM\n");
-*/
+
 %}
 
 %start stmt
@@ -24,9 +15,14 @@ num: NUM                                # 0 # printf("NUM\n");
 
 
 %%
-stmt: ASGN (reg, lambda)                # 0 # printf("stmt bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, rc)                # 0 # printf("lambda bnode op: %d\n", bnode->op);
+stmt: ASGN (reg, lambda)                # 4 # printf("stmt bnode op: %d\n", bnode->op);
+lambda: LASGN (reg, rc)                 # 0 # printf("lambda bnode op: %d\n", bnode->op);
 lambda: LASGN (reg, reg)		# 0 # printf ("lambda reg reg\n");
+
+rc: opnot                               # 0 #
+
+opnot: IDENT                            # 0 # printf ("not %s\n", bnode->name); 
+
 rc: num
 reg: IDENT                              # 0 # printf("IDENT\n");
 num: NUM                                # 0 # printf("NUM\n");
