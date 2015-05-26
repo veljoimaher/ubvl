@@ -35,7 +35,7 @@ int cnt = 0;
 @autoinh variable
 @autosyn let tn
 @attributes { char *name; } ident
-@attributes { struct list *variable; struct list *let; } LetExpr 
+@attributes { struct list *variable; struct list *let; struct treenode *tn; } LetExpr 
 @attributes { struct list *variable; struct treenode *tn; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
 @attributes { struct list *idef; struct list *sdef; struct treenode *tn; } Def Lambda
 @attributes { struct list *idef; } Program
@@ -79,7 +79,8 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
                                 @i @Expr.2.variable@ = @Expr.0.variable@;
                                 @i @Expr.3.variable@ = @Expr.0.variable@;
-                                @i @Expr.0.tn@ = new_op_node (IF, (struct treenode *)NULL, (struct treenode *)NULL);
+                                /* !!! Expr.0 treenode is incorrect. We will fix it for the next release !!! */
+                                @i @Expr.0.tn@ = new_op_node (IF, @Expr.0.tn@, (struct treenode *)NULL);
                         @}
                 | Lambda
                         @{
@@ -88,7 +89,6 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @}
 		| LetExpr
                         @{
-                                @i @Expr.0.tn@ = new_op_node (ELSE, (struct treenode *)NULL, (struct treenode *)NULL);
                         @}
                 | Ops
                         @{
@@ -137,6 +137,8 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
                                 /* @Expr.2.variable@ gets everything from before (@Expr.0.variable@) and a new element */
                                 @i @LetExpr.let@ = insert_elem (VARIABLE, list_create (), @ident.name@, 3);
                                 @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 4);
+                                /* !!! LetExpr treenode is incorrect. We will fix it for the next release !!! */
+                                @i @LetExpr.tn@ = new_op_node (LET, new_id_node (@ident.name@, @LetExpr.variable@), @Expr.0.tn@);
                         @}
                 ;
 
