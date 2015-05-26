@@ -29,7 +29,7 @@ lex.yy.o: lex.yy.c y.tab.h node.h
 
 # iburg
 codea.o: codea.c
-	gcc -ggdb -c -pedantic -Wall codea.c -DUSE_IBURG -DBURM -D_GNU_SOURCE
+	gcc -ggdb -c -pedantic -Wall codea.c -DUSE_IBURG -D_GNU_SOURCE
 
 codea.c: codea.bfe
 	bfe < codea.bfe | iburg > codea.c

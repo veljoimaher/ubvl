@@ -72,7 +72,7 @@ void treenode_dump (struct treenode *tn)
 		printf ("right: NULL\n");
 }
 
-void tree_dump (treenode *t)
+void tree_dump (struct treenode *t)
 {
         if (t != NULL)
         {
