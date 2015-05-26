@@ -6,7 +6,7 @@
 #include <assert.h>
 #define BURM
 #include "tree.h"
-
+#include "reg.h"
 
 %}
 
@@ -34,10 +34,11 @@ ops: term
 
 term: reg
 term: rc
+
 term: ADD (reg, reg)			# 2 # printf ("ADD (reg, reg)\n");
 term: ADD (reg, rc)			# 1 # printf ("ADD (reg, rc)\n");
 term: ADD (rc, reg)			# 1 # printf ("ADD (rc, reg)\n");
-term: ADD (term, term)			# 3 # printf ("ADD (term, term)\n");
+term: ADD (term, term)			# 2 # printf ("ADD (term, term)\n");
 
 term: SUB (reg, reg)			# 2 # printf ("SUB (reg, reg)\n");
 term: SUB (reg, rc)			# 1 # printf ("SUB (reg, rc)\n");
@@ -72,6 +73,6 @@ term: EQ (term, term)			# 3 # printf ("EQ (term, term)\n");
 rc: num                                 # 0 #
 
 reg: IDENT                              # 0 # printf("IDENT: %s\n", bnode->name);
-num: NUM                                # 0 # printf("NUM: %d\n", bnode->val);
+num: NUM                                # 0 # bnode->reg = newreg (); printf("\tmovq $%i, %%%s\n", bnode->val, bnode->reg);
 
 %%

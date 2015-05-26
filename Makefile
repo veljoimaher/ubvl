@@ -3,8 +3,8 @@ CFLAGS=-Wall
 
 all: codea
 
-codea: lex.yy.o y.tab.o node.o tree.o
-	gcc -o codea node.o tree.o lex.yy.o y.tab.o codea.o -lfl
+codea: lex.yy.o y.tab.o node.o tree.o reg.o
+	gcc -o codea node.o tree.o lex.yy.o y.tab.o reg.o codea.o -lfl
 
 tree.o: tree.c tree.h codea.o
 	gcc -c -ansi -pedantic -Wall tree.c -D_GNU_SOURCE
@@ -33,6 +33,9 @@ codea.o: codea.c
 
 codea.c: codea.bfe
 	bfe < codea.bfe | iburg > codea.c
+
+reg.o: reg.c reg.h
+	gcc -c -ansi -pedantic -Wall reg.c -D_GNU_SOURCE
 
 clean:
 	rm -f ag codea.c codea *.o oxout.* lex.yy.c y.tab.* *~

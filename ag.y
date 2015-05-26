@@ -5,6 +5,7 @@
 #include "node.h"
 #include "tree.h"
 #define YYDEBUG 1
+#include "reg.h"
 
 struct list *global;
 
