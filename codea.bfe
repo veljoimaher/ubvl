@@ -6,8 +6,9 @@
 #include <assert.h>
 #define BURM
 #include "tree.h"
-#include "reg.h"
 #include "assembler.h"
+#include "reg.h"
+
 
 %}
 
@@ -17,10 +18,10 @@
 
 %%
 
-stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode->left, bnode->right);
+stmt: ASGN (reg, lambda)                # 4 # assembler_asgn (bnode->left, bnode->right); 
 
-lambda: LASGN (reg, expr)               # 1 # printf("func param: %d\n", bnode->op);
-lambda: LASGN (reg, reg)		# 2 # printf ("lambda reg reg\n");
+lambda: LASGN (reg, expr)               # 1 # assembler_lasgn_reg_expr (bnode->left, bnode->right);
+lambda: LASGN (reg, reg)		# 2 # assembler_lasgn_reg_reg (bnode->left, bnode->right); 
 
 expr: ops
 expr: term 
@@ -35,41 +36,40 @@ ops: term
 
 term: reg
 term: rc
+term: ADD (reg, reg)			# 2 # assembler_add_id_id (bnode->left, bnode->right); 
+term: ADD (reg, rc)			# 1 # assembler_add_id_num (bnode->left, bnode->right); 
+term: ADD (rc, reg)			# 1 # assembler_add_num_id (bnode->left, bnode->right); 
+term: ADD (term, term)			# 3 # assembler_add (bnode->left, bnode->right); 
 
-term: ADD (reg, reg)			# 2 # printf ("ADD (reg, reg)\n");
-term: ADD (reg, rc)			# 1 # printf ("ADD (reg, rc)\n");
-term: ADD (rc, reg)			# 1 # printf ("ADD (rc, reg)\n");
-term: ADD (term, term)			# 2 # printf ("ADD (term, term)\n");
+term: SUB (reg, reg)			# 2 # assembler_sub_id_id (bnode->left, bnode->right); 
+term: SUB (reg, rc)			# 1 # assembler_sub_id_num (bnode->left, bnode->right); 
+term: SUB (rc, reg)			# 1 # assembler_sub_num_id (bnode->left, bnode->right); 
+term: SUB (term, term)			# 3 # assembler_sub (bnode->left, bnode->right); 
 
-term: SUB (reg, reg)			# 2 # printf ("SUB (reg, reg)\n");
-term: SUB (reg, rc)			# 1 # printf ("SUB (reg, rc)\n");
-term: SUB (rc, reg)			# 1 # printf ("SUB (rc, reg)\n");
-term: SUB (term, term)			# 3 # printf ("SUB (term, term)\n");
+term: MUL (reg, reg)			# 2 # assembler_mul_id_id (bnode->left, bnode->right); 
+term: MUL (reg, rc)			# 1 # assembler_mul_id_num (bnode->left, bnode->right); 
+term: MUL (rc, reg)			# 1 # assembler_mul_num_id (bnode->left, bnode->right); 
+term: MUL (term, term)			# 3 # assembler_mul (bnode->left, bnode->right); 
 
-term: MUL (reg, reg)			# 2 # printf ("MUL (reg, reg)\n");
-term: MUL (reg, rc)			# 1 # printf ("MUL (reg, rc)\n");
-term: MUL (rc, reg)			# 1 # printf ("MUL (rc, reg)\n");
-term: MUL (term, term)			# 3 # printf ("MUL (term, term)\n");
+term: AND (reg, reg)			# 2 # assembler_and_id_id (bnode->left, bnode->right); 
+term: AND (reg, rc)			# 1 # assembler_and_id_num (bnode->left, bnode->right); 
+term: AND (rc, reg)			# 1 # assembler_and_num_id (bnode->left, bnode->right); 
+term: AND (term, term)			# 3 # assembler_and (bnode->left, bnode->right); 
 
-term: AND (reg, reg)			# 2 # printf ("AND (reg, reg)\n");
-term: AND (reg, rc)			# 1 # printf ("AND (reg, rc)\n");
-term: AND (rc, reg)			# 1 # printf ("AND (rc, reg)\n");
-term: AND (term, term)			# 3 # printf ("AND (term, term)\n");
+term: DOT (reg, reg)			# 2 # assembler_dot_id_id (bnode->left, bnode->right); 
+term: DOT (reg, rc)			# 1 # assembler_dot_id_num (bnode->left, bnode->right); 
+term: DOT (rc, reg)			# 1 # assembler_dot_num_id (bnode->left, bnode->right); 
+term: DOT (term, term)			# 3 # assembler_dot (bnode->left, bnode->right); 
 
-term: DOT (reg, reg)			# 2 # printf ("DOT (reg, reg)\n");
-term: DOT (reg, rc)			# 1 # printf ("DOT (reg, rc)\n");
-term: DOT (rc, reg)			# 1 # printf ("DOT (rc, reg)\n"); 
-term: DOT (term, term)			# 3 # printf ("DOT (term, term)\n");
+term: LESS (reg, reg)			# 2 # assembler_less_id_id (bnode->left, bnode->right); 
+term: LESS (reg, rc)			# 1 # assembler_less_id_num (bnode->left, bnode->right); 
+term: LESS (rc, reg)			# 1 # assembler_less_num_id (bnode->left, bnode->right); 
+term: LESS (term, term)			# 3 # assembler_less (bnode->left, bnode->right);
 
-term: LESS (reg, reg)			# 2 # printf ("LESS (reg, reg)\n");
-term: LESS (reg, rc)			# 1 # printf ("LESS (reg, rc)\n");
-term: LESS (rc, reg)			# 1 # printf ("LESS (rc, reg)\n");
-term: LESS (term, term)			# 3 # printf ("LESS (term, term)\n");
-
-term: EQ (reg, reg)			# 2 # printf ("EQ (reg, reg)\n");
-term: EQ (reg, rc)			# 1 # printf ("EQ (reg, rc)\n");
-term: EQ (rc, reg)			# 1 # printf ("EQ (rc, reg)\n");
-term: EQ (term, term)			# 3 # printf ("EQ (term, term)\n");
+term: EQ (reg, reg)			# 2 # assembler_eq_id_id (bnode->left, bnode->right); 
+term: EQ (reg, rc)			# 1 # assembler_eq_id_num (bnode->left, bnode->right); 
+term: EQ (rc, reg)			# 1 # assembler_eq_num_id (bnode->left, bnode->right); 
+term: EQ (term, term)			# 3 # assembler_eq (bnode->left, bnode->right); 
 
 rc: num                                 # 0 #
 
