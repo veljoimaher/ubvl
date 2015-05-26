@@ -44,10 +44,10 @@ term: SUB (reg, rc)			# 1 # printf ("SUB (reg, rc)\n");
 term: SUB (rc, reg)			# 1 # printf ("SUB (rc, reg)\n");
 term: SUB (term, term)			# 3 # printf ("SUB (term, term)\n");
 
-term: MUL (reg, reg)			# 2 # printf ("SUB (reg, reg)\n");
-term: MUL (reg, rc)			# 1 # printf ("SUB (reg, rc)\n");
-term: MUL (rc, reg)			# 1 # printf ("SUB (rc, reg)\n");
-term: MUL (term, term)			# 3 # printf ("SUB (term, term)\n");
+term: MUL (reg, reg)			# 2 # printf ("MUL (reg, reg)\n");
+term: MUL (reg, rc)			# 1 # printf ("MUL (reg, rc)\n");
+term: MUL (rc, reg)			# 1 # printf ("MUL (rc, reg)\n");
+term: MUL (term, term)			# 3 # printf ("MUL (term, term)\n");
 
 term: AND (reg, reg)			# 2 # printf ("AND (reg, reg)\n");
 term: AND (reg, rc)			# 1 # printf ("AND (reg, rc)\n");
