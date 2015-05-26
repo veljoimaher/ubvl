@@ -93,7 +93,6 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @}
                 | Ops
                         @{
-                                @i @Expr.0.tn@ = new_op_node (ISNUM, NULL, NULL);
                         @}
                 | Term '+' Term PlusTerm
                         @{

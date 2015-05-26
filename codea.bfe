@@ -15,9 +15,9 @@
 
 %%
 
-stmt: ASGN (reg, lambda)           # 1 # printf("stmt bnode op: %d\n", bnode->op);
+stmt: ASGN (reg, lambda)           # 2 # printf("stmt bnode op: %d\n", bnode->op);
 lambda: LASGN (reg, reg)           # 1 # printf("lambda bnode op: %d\n", bnode->op);
 
-reg: IDENT                      # 0
-reg: NUM                        # 0
+reg: IDENT                      # 0 # printf("IDENT\n");
+reg: NUM                        # 0 # printf("NUM\n");
 %%
