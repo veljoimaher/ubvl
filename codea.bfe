@@ -24,10 +24,63 @@ num: NUM                                # 0 # printf("NUM\n");
 
 
 %%
-stmt: ASGN (reg, lambda)                # 0 # printf("stmt bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, rc)                # 0 # printf("lambda bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, reg)		# 0 # printf ("lambda reg reg\n");
-rc: num
+
+stmt: ASGN (reg, lambda)                # 4 # printf("%s:\n", LEFT_CHILD(bnode)->name);
+
+lambda: LASGN (reg, expr)                 # 1 # printf("func param: %s\n", bnode->op);
+lambda: LASGN (reg, reg)		# 2 # printf ("lambda reg reg\n");
+
+expr: ops
+expr: term 
+
+ops: NOT(ops)
+ops: HEAD(ops)
+ops: TAIL(ops)
+ops: ISNUM(ops)
+ops: ISLIST(ops)
+ops: ISFUN(ops)
+ops: term
+
+term: reg
+term: rc
+term: ADD (reg, reg)
+term: ADD (reg, rc)
+term: ADD (rc, reg)
+term: ADD (term, term)
+
+term: SUB (reg, reg)
+term: SUB (reg, rc)
+term: SUB (rc, reg)
+term: SUB (term, term)
+
+term: MUL (reg, reg)
+term: MUL (reg, rc)
+term: MUL (rc, reg)
+term: MUL (term, term)
+
+term: AND (reg, reg)
+term: AND (reg, rc)
+term: AND (rc, reg)
+term: AND (term, term)
+
+term: DOT (reg, reg)
+term: DOT (reg, rc)
+term: DOT (rc, reg)
+term: DOT (term, term)
+
+term: LESS (reg, reg)
+term: LESS (reg, rc)
+term: LESS (rc, reg)
+term: LESS (term, term)
+
+term: EQ (reg, reg)
+term: EQ (reg, rc)
+term: EQ (rc, reg)
+term: EQ (term, term)
+
+rc: num                                 # 0 #
+
 reg: IDENT                              # 0 # printf("IDENT\n");
 num: NUM                                # 0 # printf("NUM\n");
+
 %%
