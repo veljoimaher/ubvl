@@ -16,9 +16,9 @@
 
 %%
 
-stmt: ASGN (reg, lambda)                # 4 # printf("%s:\n", LEFT_CHILD(bnode)->name);
+stmt: ASGN (reg, lambda)                # 4 # printf("POCETAK\n");
 
-lambda: LASGN (reg, expr)                 # 1 # printf("func param: %s\n", bnode->op);
+lambda: LASGN (reg, expr)                 # 1 # printf("func param: %d\n", bnode->op);
 lambda: LASGN (reg, reg)		# 2 # printf ("lambda reg reg\n");
 
 expr: ops
@@ -71,7 +71,7 @@ term: EQ (term, term)
 
 rc: num                                 # 0 #
 
-reg: IDENT                              # 0 # printf("IDENT\n");
-num: NUM                                # 0 # printf("NUM\n");
+reg: IDENT                              # 0 # printf("IDENT: %s\n", bnode->name);
+num: NUM                                # 0 # printf("NUM: %d\n", bnode->val);
 
 %%
