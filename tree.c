@@ -30,23 +30,23 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
 
 struct treenode *new_id_node (char *id_name, struct list *ids)
 {
-        struct treenode *tree = new_op_node (IDENT, NULL, NULL);
+        struct treenode *tree = new_op_node (IDENT, (struct treenode *)NULL, (struct treenode *)NULL);
 
         /* tree->reg = get_node_reg (id_name, ids);
          */
         tree->name = id_name;
         
-        treenode_dump (tree);
+        /* treenode_dump (tree); */
         return tree;
 }
 
 struct treenode *new_num_node (long num)
 {
-        struct treenode *tree = new_op_node (NUM, NULL, NULL);
+        struct treenode *tree = new_op_node (NUM, (struct treenode *)NULL, (struct treenode *)NULL);
 
         tree->val = num;
 
-        treenode_dump (tree);
+        /* treenode_dump (tree); */
         return tree;
 }
 
