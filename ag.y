@@ -85,7 +85,6 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @{
                                 /* simply pass on what we already have */
                                 @i @Lambda.idef@ = @Expr.variable@;
-                                @i @Expr.0.tn@ = new_op_node (THEN, NULL, NULL);
                         @}
 		| LetExpr
                         @{

@@ -19,9 +19,9 @@ enum {
 struct treenode {
 
         int op;
-        STATEPTR_TYPE state;
         struct treenode *left;
         struct treenode *right;
+        STATEPTR_TYPE state;
         char *reg;
         char *name;
         int val;

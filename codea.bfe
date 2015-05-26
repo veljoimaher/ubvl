@@ -6,7 +6,17 @@
 #include <assert.h>
 
 #include "tree.h"
+/*
+stmt: reg                               # 0 
+stmt: lambda                            # 0 
+stmt: asgn                              # 0 
+asgn: ASGN (reg, lambda)                # 0 # printf("stmt bnode op: %d\n", bnode->op);
+lambda: LASGN (reg, rc)                # 0 # printf("lambda bnode op: %d\n", bnode->op);
 
+rc: num
+reg: IDENT                              # 0 # printf("IDENT\n");
+num: NUM                                # 0 # printf("NUM\n");
+*/
 %}
 
 %start stmt
@@ -14,10 +24,10 @@
 
 
 %%
+stmt: ASGN (reg, lambda)                # 0 # printf("stmt bnode op: %d\n", bnode->op);
+lambda: LASGN (reg, rc)                # 0 # printf("lambda bnode op: %d\n", bnode->op);
 
-stmt: ASGN (reg, lambda)           # 2 # printf("stmt bnode op: %d\n", bnode->op);
-lambda: LASGN (reg, reg)           # 1 # printf("lambda bnode op: %d\n", bnode->op);
-
-reg: IDENT                      # 0 # printf("IDENT\n");
-reg: NUM                        # 0 # printf("NUM\n");
+rc: num
+reg: IDENT                              # 0 # printf("IDENT\n");
+num: NUM                                # 0 # printf("NUM\n");
 %%
