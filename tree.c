@@ -64,6 +64,10 @@ void treenode_dump (struct treenode *tn)
         printf ("val: %d\n", tn->val);
         if (tn->left != NULL)
                 printf ("left: %d\n", tn->left->op);
+	else
+		printf ("left: NULL\n");
         if (tn->right != NULL)
                 printf ("right: %d\n", tn->right->op);
+	else
+		printf ("right: NULL\n");
 }

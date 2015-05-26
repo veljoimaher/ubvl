@@ -186,11 +186,11 @@ struct list * insert_elem (int type, struct list *list, char *name, int nr)
 	node->val = nr;
 
 	list_push_back (new_list, node);
-	printf ("insert_elem -> trying to merge\n");
+	/*printf ("insert_elem -> trying to merge\n");
 	list_dump (list);
 	printf ("and\n");
 	list_dump (new_list);
-	printf ("\n");
+	printf ("\n");*/
 	merged = list_merge_to_new (list, new_list);
 	/*if (merged == NULL)
 	{
@@ -220,7 +220,7 @@ void isPresent (struct list *l, char *name)
         node->name = name;
 
         printf ("trying to find: '%s' in following list\n", name);
-	list_dump (l);
+	/* list_dump (l); */
 
         if ( list_find_any_type (l, node) == NULL)
         {
