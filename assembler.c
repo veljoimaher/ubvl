@@ -37,7 +37,11 @@ char *assembler_lasgn_reg_reg (struct treenode *lc, struct treenode *rc)
 char *assembler_add_id_id (struct treenode *lc, struct treenode *rc)
 {
         printf ("ADD (reg, reg)\n");
-        return newreg();
+        char *r = newreg();
+        printf ("\tmovq %%%s, %%%s\n", lc->reg, r);
+        printf ("\taddq %%%s, %%%s\n", rc->reg, r);
+
+        return r;
 
 }
 char *assembler_add_id_num (struct treenode *lc, struct treenode *rc)
