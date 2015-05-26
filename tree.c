@@ -71,3 +71,22 @@ void treenode_dump (struct treenode *tn)
 	else
 		printf ("right: NULL\n");
 }
+
+void tree_dump (treenode *t)
+{
+        if (t != NULL)
+        {
+                printf ("op: %d, name: %s, val: %d\n", t->op, t->name, t->val);
+
+                if (LEFT_CHILD(t) != NULL)
+                {
+                        tree_dump (LEFT_CHILD(t));
+                }
+
+                if (RIGHT_CHILD(t) != NULL)
+                {
+                        tree_dump (RIGHT_CHILD(t));
+                }
+
+        }
+}
