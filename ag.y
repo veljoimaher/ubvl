@@ -57,21 +57,22 @@ Program         :
                         @{
 				@i @Program.1.idef@ = @Def.sdef@;
                                 @i @Def.idef@ = list_merge (@Program.0.idef@, @Def.sdef@);
-                                @codegen invoke_burm(@Def.tn@);
-			@}
+                        @}
                 
 Def             : ident '=' Lambda
                         @{     
                                 @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 10); 
                                 @i @Lambda.idef@ = @Def.idef@;
                                 @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
+				@codegen func_header (@ident.name@);
+				@codegen invoke_burm(@Def.tn@);
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
 				@i @Lambda.sdef@ = list_create (); 
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
-                                @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, @Expr.variable@), @Expr.tn@); 
+                                @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, @Expr.variable@), @Expr.tn@);
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
