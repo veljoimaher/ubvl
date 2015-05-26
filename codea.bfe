@@ -7,6 +7,7 @@
 #define BURM
 #include "tree.h"
 #include "reg.h"
+#include "assembler.h"
 
 %}
 
@@ -16,7 +17,7 @@
 
 %%
 
-stmt: ASGN (reg, lambda)                # 4 # printf("POCETAK\n");
+stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode->left, bnode->right);
 
 lambda: LASGN (reg, expr)               # 1 # printf("func param: %d\n", bnode->op);
 lambda: LASGN (reg, reg)		# 2 # printf ("lambda reg reg\n");
