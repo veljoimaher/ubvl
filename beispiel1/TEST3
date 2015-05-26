@@ -1,0 +1,5 @@
+// use all operators and put result in %rax
+%rbx = 5 + 8 + 11 + 100 + 3 + 45 + 12 + 78; 
+%rbx += 20;
+%rbx += %rbx;
+%rax = %rbx;

@@ -1,0 +1,59 @@
+Beispiel 1
+
+-----------
+Ausfuehrung 
+-----------
+
+Mit 'make' wird das Programm 'example1' erzeugt, dem in der
+Standardeingabe Programme uebergeben werden koennen.  Mit 'make check'
+kann man sich die Ergebnisse fuer einzelen Beispieleingaben ansehen.
+
+
+------------
+Erlaeuterung
+------------
+
+Dieses kleine Beispiel soll in erster Linie das Zusammenspiel aller
+benoetigten Werkzeuge (lex/flex, yacc/bison, ox, burg)
+veranschaulichen.
+
+Das Beispiel erzeugt Code fuer folgende Grammatik:
+
+stmt	: REGISTER = expr
+	| REGISTER += expr
+	;
+
+expr    : REGISTER
+	| constexpr
+        ;
+
+constexpr: constexpr '+' constexpr
+	| NUMBER
+        ;
+
+wobei NUMBER eine Konstante ist und REGISTER ein Register. Die Register
+werden in AT&T Syntax angegeben (siehe Skriptum).
+
+Ein wesentlicher Punkt in diesem Beispiel ist, wie flex, bison, ox und burg
+zusammenarbeiten. Daher ist die Sprache moeglichst einfach gehalten, sodass
+auch keine temporaeren Variablen fuer die Berechnung von Ausdruecken
+verwendet werden muessen.
+
+Burg wird in einem pre-order Traversal von ox aus aufgerufen, ohne
+dass globale Variablen verwendet werden. An Burg wird die Wurzel des
+Operator-Baumes, mithilfe des Attributes 'n' im Traversal 'codegen'
+uebergeben. Die Attributberechnung erfolgt in ox immer vor der
+Ausfuehrung von Traversals, daher ist sichergestellt, dass der im
+Attribut 'n' berechnete Baum bereits vollstaendig erzeugt ist, wenn
+der Parsebaum traversiert wird.
+
+Bei der Verwendung von iburg (beispiel1b), ist der einzige Unterschied,
+dass die Verwendete Struktur fuer Knoten etwas anders formuliert werden
+muss. Im Beispiel wird dies durch die Defines USE_IBURG bzw. BURM behandelt 
+(siehe beispiel1.h und das Makefile).
+
+Die Codeerzeugung erfolgt im gegeben Beispiel als Seiteneffekt
+(printf) der Burg-Aktionen (angegeben in burg.bfe). Burg optimiert
+in diesem kleine Beispiel konstante Ausdruecke, die aus Zahlen und
+beliebig vielen Additionen bestehen. Die beiden Arten der Zuweisungen
+werden jeweils in einen Assemblerbefehle uebersetzt.
