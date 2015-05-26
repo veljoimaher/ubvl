@@ -79,7 +79,7 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
                                 @i @Expr.2.variable@ = @Expr.0.variable@;
                                 @i @Expr.3.variable@ = @Expr.0.variable@;
-                                @i @Expr.0.tn@ = new_op_node (IF, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (IF, (struct treenode *)NULL, (struct treenode *)NULL);
                         @}
                 | Lambda
                         @{
@@ -88,44 +88,44 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @}
 		| LetExpr
                         @{
-                                @i @Expr.0.tn@ = new_op_node (ELSE, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (ELSE, (struct treenode *)NULL, (struct treenode *)NULL);
                         @}
                 | Ops
                         @{
                         @}
                 | Term '+' Term PlusTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (ADD, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (ADD, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Term '-' Term
                         @{
-                                @i @Expr.0.tn@ = new_op_node (SUB, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (SUB, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Term '*' Term MulTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (MUL, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (MUL, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Term t_and Term AndTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (AND, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (AND, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Term '.' Term DotTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (DOT, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (DOT, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Term '<' Term
                         @{
-                                @i @Expr.0.tn@ = new_op_node (LESS, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (LESS, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Term '=' Term
                         @{
-                                @i @Expr.0.tn@ = new_op_node (EQ, NULL, NULL);
+                                @i @Expr.0.tn@ = new_op_node (EQ, @Term.0.tn@, @Term.1.tn@);
                         @}
                 | Expr Term
                         @{
                                 /* simply pass on what we already have */
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
-                                @i @Expr.0.tn@ = new_op_node (EQ, NULL, NULL);
+                                @i @Expr.0.tn@ = @Expr.1.tn@; 
                         @}
                 ;
 
@@ -142,55 +142,75 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
 
 
 Ops             : t_not Ops
+                        @{
+                                @i @Ops.tn@ = new_op_node (NOT, @Ops.1.tn@, (struct treenode *)NULL);
+                        @}
                 | t_head Ops
-                | t_tail Ops
+                        @{
+                                @i @Ops.tn@ = new_op_node (HEAD, @Ops.1.tn@, (struct treenode *)NULL);
+                        @}
+                | t_tail Ops 
+                        @{
+                                @i @Ops.tn@ = new_op_node (TAIL, @Ops.1.tn@, (struct treenode *)NULL);
+                        @}
                 | t_isnum Ops
+                        @{
+                                @i @Ops.tn@ = new_op_node (ISNUM, @Ops.1.tn@, (struct treenode *)NULL);
+                        @}
                 | t_islist Ops
+                        @{
+                                @i @Ops.tn@ = new_op_node (ISLIST, @Ops.1.tn@, (struct treenode *)NULL);
+                        @}
                 | t_isfun Ops
+                        @{
+                                @i @Ops.tn@ = new_op_node (ISFUN, @Ops.1.tn@, (struct treenode *)NULL);
+                        @}
+
                 | Term
+                        @{
+                        @}
                 ;
 DotTerm         : 
                 @{
-                                @i @DotTerm.0.tn@ = new_op_node (DOT, NULL, NULL);
+                                @i @DotTerm.0.tn@ = new_op_node (DOT, (struct treenode *)NULL, (struct treenode *)NULL);
                 @}
                 | DotTerm '.' Term
                 @{
-                                @i @DotTerm.0.tn@ = new_op_node (DOT, NULL, NULL);
+                                @i @DotTerm.0.tn@ = new_op_node (DOT, @DotTerm.1.tn@, @Term.tn@);
                 @}
                 ;
 AndTerm         : 
                 @{
-                                @i @AndTerm.0.tn@ = new_op_node (AND, NULL, NULL);
+                                @i @AndTerm.0.tn@ = new_op_node (AND, (struct treenode *)NULL, (struct treenode *)NULL);
                 @}
 
                 | AndTerm t_and Term
                 @{
-                                @i @AndTerm.0.tn@ = new_op_node (AND, NULL, NULL);
+                                @i @AndTerm.0.tn@ = new_op_node (AND, @AndTerm.1.tn@, @Term.tn@);
                 @}
                 ;
 PlusTerm        : 
                 @{
-                                @i @PlusTerm.0.tn@ = new_op_node (ADD, NULL, NULL);
+                                @i @PlusTerm.0.tn@ = new_op_node (ADD, (struct treenode *)NULL, (struct treenode *)NULL);
                 @}
 
                 | PlusTerm '+' Term
                 @{
-                                @i @PlusTerm.0.tn@ = new_op_node (ADD, NULL, NULL);
+                                @i @PlusTerm.0.tn@ = new_op_node (ADD, @PlusTerm.1.tn@, @Term.tn@);
                 @}
                 ;
 MulTerm         : 
                 @{
-                                @i @MulTerm.0.tn@ = new_op_node (MUL, NULL, NULL);
+                                @i @MulTerm.0.tn@ = new_op_node (MUL, (struct treenode *)NULL, (struct treenode *)NULL);
                 @}
 
                 | MulTerm '*' Term
                 @{
-                                @i @MulTerm.0.tn@ = new_op_node (MUL, NULL, NULL);
+                                @i @MulTerm.0.tn@ = new_op_node (MUL, @MulTerm.1.tn@, @Term.tn@);
                 @}
                 ;
 Term            : '(' Expr ')'
                 @{
-                                @i @Term.tn@ = new_op_node (IF, NULL, NULL);
                 @}
                 | num
                 @{
