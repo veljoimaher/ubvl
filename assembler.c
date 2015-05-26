@@ -4,9 +4,15 @@
 
 #include "node.h"
 #include "tree.h"
-#include "register.h"
+#include "reg.h"
 
-
+void func_header (char *fname)
+{
+        printf ("\t.text\n");
+        printf ("\t.global %s\n", fname);
+        printf ("\t.type %s, @function\n", fname);
+        printf ("%s:\n", fname);
+}
 
 char *assembler_asgn (struct treenode *lc, struct treenode *rc)
 {

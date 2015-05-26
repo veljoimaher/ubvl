@@ -3,9 +3,10 @@
 
 #include "tree.h"
 
+void func_header (char *fname);
 char *assembler_asgn (struct treenode *lc, struct treenode *rc);
 char *assembler_lasgn_reg_expr (struct treenode *lc, struct treenode *rc);
-char *assembler_lasgn_reg_reg (struct treenode *lc, struct treenode *rc)
+char * assembler_lasgn_reg_reg (struct treenode *lc, struct treenode *rc);
 
 char *assembler_add_id_id (struct treenode *lc, struct treenode *rc);
 char *assembler_add_id_num (struct treenode *lc, struct treenode *rc);
