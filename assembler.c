@@ -14,241 +14,241 @@ void func_header (char *fname)
         printf ("%s:\n", fname);
 }
 
-char *assembler_asgn (struct treenode *lc, struct treenode *rc)
+char *assembler_asgn (struct treenode *tn)
 {
         printf("POCETAK\n");
 
         return newreg();
 
 }
-char *assembler_lasgn_reg_expr (struct treenode *lc, struct treenode *rc)
+char *assembler_lasgn_reg_expr (struct treenode *tn)
 {
-        printf("func param: %d\n", lc->op);
+        printf("func param: %d\n", tn->op);
         return newreg();
 
 }
-char *assembler_lasgn_reg_reg (struct treenode *lc, struct treenode *rc)
+char *assembler_lasgn_reg_reg (struct treenode *tn)
 {
         printf("lambda reg reg\n");
         return newreg();
 
 }
 
-char *assembler_add_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_add_id_id (struct treenode *tn)
 {
-        printf ("ADD (reg, reg)\n");
         char *r = newreg();
-        printf ("\tmovq %%%s, %%%s\n", lc->reg, r);
-        printf ("\taddq %%%s, %%%s\n", rc->reg, r);
+        printf ("ADD (reg, reg)\n");
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, r);
+        printf ("\taddq %%%s, %%%s\n", tn->right->reg, r);
 
         return r;
 
 }
-char *assembler_add_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_add_id_num (struct treenode *tn)
 {
         printf ("ADD (reg, rc)\n");
         return newreg();
 
 }
-char *assembler_add_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_add_num_id (struct treenode *tn)
 {
         printf ("ADD (rc, reg)\n");
         return newreg();
 
 }
-char *assembler_add_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_add_num_num (struct treenode *tn)
 {
         printf ("ADD (rc, rc)\n");
         return newreg();
         
 }
-char *assembler_add (struct treenode *lc, struct treenode *rc)
+char *assembler_add (struct treenode *tn)
 {
         printf ("ADD (term, term)\n");
         return newreg();
 
 }
 
-char *assembler_sub_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_sub_id_id (struct treenode *tn)
 {
         printf ("SUB (reg, reg)\n");
         return newreg();
 
 }
-char *assembler_sub_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_sub_id_num (struct treenode *tn)
 {
         printf ("SUB (reg, rc)\n");
         return newreg();
 
 }
-char *assembler_sub_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_sub_num_id (struct treenode *tn)
 {
 
         printf ("SUB (rc, reg)\n");
         return newreg();
 }
-char *assembler_sub_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_sub_num_num (struct treenode *tn)
 {
         printf ("SUB (rc, rc)\n");
         return newreg();
 
 }
-char *assembler_sub (struct treenode *lc, struct treenode *rc)
+char *assembler_sub (struct treenode *tn)
 {
 
         printf ("SUB (term, term)\n");
         return newreg();
 }
 
-char *assembler_mul_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_mul_id_id (struct treenode *tn)
 {
         printf ("MUL (reg, reg)\n");
         return newreg();
 
 }
-char *assembler_mul_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_mul_id_num (struct treenode *tn)
 {
         printf ("MUL (reg, rc)\n");
         return newreg();
 
 }
-char *assembler_mul_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_mul_num_id (struct treenode *tn)
 {
         printf ("MUL (rc, reg)\n");
         return newreg();
 
 }
-char *assembler_mul_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_mul_num_num (struct treenode *tn)
 {
         printf ("MUL (rc, rc)\n");
         return newreg();
 
 }
-char *assembler_mul (struct treenode *lc, struct treenode *rc)
+char *assembler_mul (struct treenode *tn)
 {
         printf ("MUL (term, term)\n");
         return newreg();
 
 }
 
-char *assembler_and_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_and_id_id (struct treenode *tn)
 {
         printf ("AND (reg, reg)\n");
         return newreg();
         
 }
-char *assembler_and_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_and_id_num (struct treenode *tn)
 {
 
         printf ("AND (reg, rc)\n");
         return newreg();
 }
-char *assembler_and_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_and_num_id (struct treenode *tn)
 {
         printf ("AND (rc, reg)\n");
         return newreg();
 
 }
-char *assembler_and_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_and_num_num (struct treenode *tn)
 {
         printf ("AND (rc, rc)\n");
         return newreg();
 
 }
-char *assembler_and (struct treenode *lc, struct treenode *rc)
+char *assembler_and (struct treenode *tn)
 {
         printf ("AND (term, term)\n");
         return newreg();
 
 }
 
-char *assembler_dot_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_dot_id_id (struct treenode *tn)
 {
         printf ("DOT (reg, reg)\n");
         return newreg();
 
 }
-char *assembler_dot_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_dot_id_num (struct treenode *tn)
 {
         printf ("DOT (reg, rc)\n");
         return newreg();
 
 }
-char *assembler_dot_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_dot_num_id (struct treenode *tn)
 {
 
         printf ("DOT (rc, reg)\n");
         return newreg();
 }
-char *assembler_dot_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_dot_num_num (struct treenode *tn)
 {
 
         printf ("DOT (rc, rc)\n");
         return newreg();
 }
-char *assembler_dot (struct treenode *lc, struct treenode *rc)
+char *assembler_dot (struct treenode *tn)
 {
         printf ("DOT (term, term)\n");
         return newreg();
 
 }
  
-char *assembler_less_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_less_id_id (struct treenode *tn)
 {
         printf ("LESS (reg, reg)\n");
         return newreg();
 
 }
-char *assembler_less_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_less_id_num (struct treenode *tn)
 {
         printf ("LESS (reg, rc)\n");
         return newreg();
 
 }
-char *assembler_less_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_less_num_id (struct treenode *tn)
 {
         printf ("LESS (rc, reg)\n");
         return newreg();
 
 }
-char *assembler_less_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_less_num_num (struct treenode *tn)
 {
         printf ("LESS (rc, rc)\n");
         return newreg();
 
 }
-char *assembler_less (struct treenode *lc, struct treenode *rc)
+char *assembler_less (struct treenode *tn)
 {
         printf ("LESS (term, term)\n");
         return newreg();
 
 }
 
-char *assembler_eq_id_id (struct treenode *lc, struct treenode *rc)
+char *assembler_eq_id_id (struct treenode *tn)
 {
         printf ("EQ (reg, reg)\n");
         return newreg();
 
 }
-char *assembler_eq_id_num (struct treenode *lc, struct treenode *rc)
+char *assembler_eq_id_num (struct treenode *tn)
 {
         printf ("EQ (reg, rc)\n");
         return newreg();
 
 }
-char *assembler_eq_num_id (struct treenode *lc, struct treenode *rc)
+char *assembler_eq_num_id (struct treenode *tn)
 {
         printf ("EQ (rc, reg)\n");
         return newreg();
 
 }
-char *assembler_eq_num_num (struct treenode *lc, struct treenode *rc)
+char *assembler_eq_num_num (struct treenode *tn)
 {
         printf ("EQ (rc, rc)\n");
         return newreg();
 
 }
-char *assembler_eq (struct treenode *lc, struct treenode *rc)
+char *assembler_eq (struct treenode *tn)
 {
         printf ("EQ (term, term)\n");
         return newreg();

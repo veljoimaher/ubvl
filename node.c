@@ -219,8 +219,10 @@ void isPresent (struct list *l, char *name)
 
         node->name = name;
 
+        /* 
         printf ("trying to find: '%s' in following list\n", name);
-	/* list_dump (l); */
+	list_dump (l);
+        */
 
         if ( list_find_any_type (l, node) == NULL)
         {

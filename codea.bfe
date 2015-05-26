@@ -18,10 +18,10 @@
 
 %%
 
-stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode->left, bnode->right); 
+stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode); 
 
-lambda: LASGN (reg, expr)               # 1 # bnode->reg = assembler_lasgn_reg_expr (bnode->left, bnode->right);
-lambda: LASGN (reg, reg)		# 2 # bnode->reg = assembler_lasgn_reg_reg (bnode->left, bnode->right); 
+lambda: LASGN (reg, expr)               # 1 # bnode->reg = assembler_lasgn_reg_expr (bnode);
+lambda: LASGN (reg, reg)		# 2 # bnode->reg = assembler_lasgn_reg_reg (bnode); 
 
 expr: ops
 expr: term 
@@ -36,44 +36,44 @@ ops: term
 
 term: reg
 term: rc
-term: ADD (reg, reg)			# 2 # bnode->reg = assembler_add_id_id (bnode->left, bnode->right); 
-term: ADD (reg, rc)			# 1 # bnode->reg = assembler_add_id_num (bnode->left, bnode->right); 
-term: ADD (rc, reg)			# 1 # bnode->reg = assembler_add_num_id (bnode->left, bnode->right); 
-term: ADD (term, term)			# 3 # bnode->reg = assembler_add (bnode->left, bnode->right); 
+term: ADD (reg, reg)			# 2 # bnode->reg = assembler_add_id_id (bnode); 
+term: ADD (reg, rc)			# 1 # bnode->reg = assembler_add_id_num (bnode); 
+term: ADD (rc, reg)			# 1 # bnode->reg = assembler_add_num_id (bnode); 
+term: ADD (term, term)			# 3 # bnode->reg = assembler_add (bnode); 
 
-term: SUB (reg, reg)			# 2 # bnode->reg = assembler_sub_id_id (bnode->left, bnode->right); 
-term: SUB (reg, rc)			# 1 # bnode->reg = assembler_sub_id_num (bnode->left, bnode->right); 
-term: SUB (rc, reg)			# 1 # bnode->reg = assembler_sub_num_id (bnode->left, bnode->right); 
-term: SUB (term, term)			# 3 # bnode->reg = assembler_sub (bnode->left, bnode->right); 
+term: SUB (reg, reg)			# 2 # bnode->reg = assembler_sub_id_id (bnode); 
+term: SUB (reg, rc)			# 1 # bnode->reg = assembler_sub_id_num (bnode); 
+term: SUB (rc, reg)			# 1 # bnode->reg = assembler_sub_num_id (bnode); 
+term: SUB (term, term)			# 3 # bnode->reg = assembler_sub (bnode); 
 
-term: MUL (reg, reg)			# 2 # bnode->reg = assembler_mul_id_id (bnode->left, bnode->right); 
-term: MUL (reg, rc)			# 1 # bnode->reg = assembler_mul_id_num (bnode->left, bnode->right); 
-term: MUL (rc, reg)			# 1 # bnode->reg = assembler_mul_num_id (bnode->left, bnode->right); 
-term: MUL (term, term)			# 3 # bnode->reg = assembler_mul (bnode->left, bnode->right); 
+term: MUL (reg, reg)			# 2 # bnode->reg = assembler_mul_id_id (bnode); 
+term: MUL (reg, rc)			# 1 # bnode->reg = assembler_mul_id_num (bnode); 
+term: MUL (rc, reg)			# 1 # bnode->reg = assembler_mul_num_id (bnode); 
+term: MUL (term, term)			# 3 # bnode->reg = assembler_mul (bnode); 
 
-term: AND (reg, reg)			# 2 # bnode->reg = assembler_and_id_id (bnode->left, bnode->right); 
-term: AND (reg, rc)			# 1 # bnode->reg = assembler_and_id_num (bnode->left, bnode->right); 
-term: AND (rc, reg)			# 1 # bnode->reg = assembler_and_num_id (bnode->left, bnode->right); 
-term: AND (term, term)			# 3 # bnode->reg = assembler_and (bnode->left, bnode->right); 
+term: AND (reg, reg)			# 2 # bnode->reg = assembler_and_id_id (bnode); 
+term: AND (reg, rc)			# 1 # bnode->reg = assembler_and_id_num (bnode); 
+term: AND (rc, reg)			# 1 # bnode->reg = assembler_and_num_id (bnode); 
+term: AND (term, term)			# 3 # bnode->reg = assembler_and (bnode); 
 
-term: DOT (reg, reg)			# 2 # bnode->reg = assembler_dot_id_id (bnode->left, bnode->right); 
-term: DOT (reg, rc)			# 1 # bnode->reg = assembler_dot_id_num (bnode->left, bnode->right); 
-term: DOT (rc, reg)			# 1 # bnode->reg = assembler_dot_num_id (bnode->left, bnode->right); 
-term: DOT (term, term)			# 3 # bnode->reg = assembler_dot (bnode->left, bnode->right); 
+term: DOT (reg, reg)			# 2 # bnode->reg = assembler_dot_id_id (bnode); 
+term: DOT (reg, rc)			# 1 # bnode->reg = assembler_dot_id_num (bnode); 
+term: DOT (rc, reg)			# 1 # bnode->reg = assembler_dot_num_id (bnode); 
+term: DOT (term, term)			# 3 # bnode->reg = assembler_dot (bnode); 
 
-term: LESS (reg, reg)			# 2 # bnode->reg = assembler_less_id_id (bnode->left, bnode->right); 
-term: LESS (reg, rc)			# 1 # bnode->reg = assembler_less_id_num (bnode->left, bnode->right); 
-term: LESS (rc, reg)			# 1 # bnode->reg = assembler_less_num_id (bnode->left, bnode->right); 
-term: LESS (term, term)			# 3 # bnode->reg = assembler_less (bnode->left, bnode->right);
+term: LESS (reg, reg)			# 2 # bnode->reg = assembler_less_id_id (bnode); 
+term: LESS (reg, rc)			# 1 # bnode->reg = assembler_less_id_num (bnode); 
+term: LESS (rc, reg)			# 1 # bnode->reg = assembler_less_num_id (bnode); 
+term: LESS (term, term)			# 3 # bnode->reg = assembler_less (bnode);
 
-term: EQ (reg, reg)			# 2 # bnode->reg = assembler_eq_id_id (bnode->left, bnode->right); 
-term: EQ (reg, rc)			# 1 # bnode->reg = assembler_eq_id_num (bnode->left, bnode->right); 
-term: EQ (rc, reg)			# 1 # bnode->reg = assembler_eq_num_id (bnode->left, bnode->right); 
-term: EQ (term, term)			# 3 # bnode->reg = assembler_eq (bnode->left, bnode->right); 
+term: EQ (reg, reg)			# 2 # bnode->reg = assembler_eq_id_id (bnode); 
+term: EQ (reg, rc)			# 1 # bnode->reg = assembler_eq_id_num (bnode); 
+term: EQ (rc, reg)			# 1 # bnode->reg = assembler_eq_num_id (bnode); 
+term: EQ (term, term)			# 3 # bnode->reg = assembler_eq (bnode); 
 
 rc: num                                 # 0 #
 
-reg: IDENT                              # 0 # printf("IDENT: %s\n", bnode->name);
+reg: IDENT                              # 0 
 num: NUM                                # 0 # bnode->reg = newreg (); printf("\tmovq $%i, %%%s\n", bnode->val, bnode->reg);
 
 %%
