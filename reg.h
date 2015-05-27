@@ -19,6 +19,7 @@ void reg_init (struct list *l);
 char * newreg();
 void freereg(char * reg);
 void freeallreg ();
+void reg_dump ();
 
 #endif
 

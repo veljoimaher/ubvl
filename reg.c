@@ -32,12 +32,16 @@ void reg_init (struct list *l)
 		if (n->type == PARAMETER)
 			nr_params++;
 	}
+	printf ("number of parameters: %d\n", nr_params);
 
 	for (i=0; i<nr_params; i++)
 	{
 		all_regs[i].type = PARAM;
 		all_regs[i].used = 1;
 	}
+
+	printf ("finishing reg_init() - dumping regs\n");
+	reg_dump ();
 }
 
 char * newreg()
@@ -76,5 +80,14 @@ void freeallreg ()
 	{
 		all_regs[i].type = TEMP;
 		all_regs[i].used = 0;
+	}
+}
+
+void reg_dump ()
+{
+	int i;
+	for (i=0; i<NR_REGS; i++)
+	{
+		printf ("name: '%s', used: %d, type: '%s'\n", all_regs[i].name, all_regs[i].used, all_regs[i].type?"PARAM":"TEMP");
 	}
 }
