@@ -32,9 +32,7 @@ struct treenode *new_id_node (char *id_name, struct list *ids)
 {
         struct treenode *tree = new_op_node (IDENT, (struct treenode *)NULL, (struct treenode *)NULL);
 
-        /* tree->reg = get_node_reg (id_name, ids);
-        list_dump (ids);
-         */
+        tree->reg = get_node_reg (id_name, ids);
         tree->name = id_name;
         
         /* treenode_dump (tree); */
@@ -51,6 +49,19 @@ struct treenode *new_num_node (long num)
         return tree;
 }
 
+struct treenode *get_node_reg (char *id_name, struct list *ids)
+{
+        struct node *n;
+
+        n = list_head (ids);
+        while ( (n = list_next (n)) != list_end (ids))
+        {
+                if (strcmp (n->name, id_name))
+                        return n->reg;
+        }
+
+        return "you're an idiot, this can't happen!";
+}
 void treenode_dump (struct treenode *tn)
 {
         if (tn == NULL)
