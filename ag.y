@@ -43,7 +43,7 @@ int cnt = 0;
 @attributes { int val; } num
 
 @traversal @preorder err
-@traversal @postorder codegen
+@traversal @preorder codegen
 
 %%
 StartProgram	: Program
