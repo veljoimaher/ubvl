@@ -208,7 +208,7 @@ void list_dump (struct list *list)
 	n = list_head (list);
 	while ( (n = list_next (n)) != list_end (list))
 	{
-		fprintf (stdout, "%d\t type: %d, name: '%s', val: %d\n", cnt, n->type, n->name, n->val);
+		fprintf (stdout, "%d\t type: %d, name: '%s', val: %d, reg: %s\n", cnt, n->type, n->name, n->val, n->reg);
 		cnt++;
 	}
 }
