@@ -53,10 +53,9 @@ char *assembler_add_id_id (struct treenode *tn)
 }
 char *assembler_add_id_num (struct treenode *tn)
 {
-        char *r = newreg();
-        printf ("\taddq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\taddq %%%s, %%%s\n", tn->left->reg, tn->right->reg);
 
-        return tn->left->reg;
+        return tn->right->reg;
 
 }
 char *assembler_add_num_id (struct treenode *tn)
@@ -144,8 +143,8 @@ char *assembler_mul (struct treenode *tn)
 
 char *assembler_and_id_id (struct treenode *tn)
 {
-        printf ("AND (reg, reg)\n");
-        return newreg();
+        printf ("\tsubq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        return tn->left->reg;
 
 }
 char *assembler_and_id_num (struct treenode *tn)
