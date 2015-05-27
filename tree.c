@@ -56,6 +56,9 @@ char *get_node_reg (char *id_name, struct list *ids)
         struct node *n;
         char *reg = "NULL";
 
+	printf ("list dump in get_node_reg\n");
+	list_dump (ids);
+	printf ("\n");
         n = list_head (ids);
         while ( (n = list_next (n)) != list_end (ids))
         {
@@ -91,7 +94,7 @@ void tree_dump (struct treenode *t)
 {
         if (t != NULL)
         {
-                printf ("op: %d, name: %s, val: %d\n", t->op, t->name, t->val);
+                printf ("op: %d, name: %s, val: %d, reg: %s\n", t->op, t->name, t->val, t->reg);
 
                 if (LEFT_CHILD(t) != NULL)
                 {

@@ -45,4 +45,5 @@ char *get_node_reg (char *id_name, struct list *ids);
 
 void treenode_dump (struct treenode *tn);
 void invoke_burm (NODEPTR_TYPE root);
+void tree_dump (struct treenode *t);
 #endif
