@@ -30,18 +30,13 @@ void reg_init (struct list *l)
 	while ( (n = list_next (n)) != list_end (l))
 	{
 		if (n->type == PARAMETER)
+		{
+			all_regs[nr_params].type = PARAM;
+			all_regs[nr_params].used = 1;
+			n->reg = strdup (all_regs[nr_params].name);
 			nr_params++;
+		}
 	}
-	printf ("number of parameters: %d\n", nr_params);
-
-	for (i=0; i<nr_params; i++)
-	{
-		all_regs[i].type = PARAM;
-		all_regs[i].used = 1;
-	}
-
-	printf ("finishing reg_init() - dumping regs\n");
-	reg_dump ();
 }
 
 char * newreg()
@@ -88,6 +83,6 @@ void reg_dump ()
 	int i;
 	for (i=0; i<NR_REGS; i++)
 	{
-		printf ("name: '%s', used: %d, type: '%s'\n", all_regs[i].name, all_regs[i].used, all_regs[i].type?"PARAM":"TEMP");
+		printf ("name: '%s', used: %d, type: '%s'\n", all_regs[i].name, all_regs[i].used, all_regs[i].type?"TEMP":"PARAM");
 	}
 }
