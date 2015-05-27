@@ -75,7 +75,9 @@ Lambda          : t_fun ident t_assign Expr t_end
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
 				@codegen reg_init (@Expr.variable@);
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, @Expr.variable@), @Expr.tn@);
+                                /*
                                 @err list_dump (@Expr.variable@);
+                                */
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
