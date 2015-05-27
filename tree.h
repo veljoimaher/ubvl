@@ -41,7 +41,7 @@ typedef struct treenode treenode_ptr;
 struct treenode *new_op_node (int op, struct treenode *left, struct treenode *right);
 struct treenode *new_id_node (char *id_name, struct list *ids);
 struct treenode *new_num_node (long num);
-struct treenode *get_node_reg (char *id_name, struct list *ids);
+char *get_node_reg (char *id_name, struct list *ids);
 
 void treenode_dump (struct treenode *tn);
 void invoke_burm (NODEPTR_TYPE root);
