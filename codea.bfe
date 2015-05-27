@@ -26,12 +26,12 @@ lambda: LASGN (reg, reg)		# 2 # bnode->reg = assembler_lasgn_reg_reg (bnode);
 expr: ops
 expr: term 
 
-ops: NOT(ops)
-ops: HEAD(ops)
-ops: TAIL(ops)
-ops: ISNUM(ops)
-ops: ISLIST(ops)
-ops: ISFUN(ops)
+ops: NOT(ops)                           # 1 # bnode->reg = assembler_not (bnode);
+ops: HEAD(ops)                           # 1 # bnode->reg = assembler_head (bnode);
+ops: TAIL(ops)                           # 1 # bnode->reg = assembler_tail (bnode);
+ops: ISNUM(ops)                           # 1 # bnode->reg = assembler_isnum (bnode);
+ops: ISLIST(ops)                           # 1 # bnode->reg = assembler_islist (bnode);
+ops: ISFUN(ops)                           # 1 # bnode->reg = assembler_isfun (bnode);
 ops: term
 
 term: reg
