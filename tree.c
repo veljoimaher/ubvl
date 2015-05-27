@@ -33,6 +33,7 @@ struct treenode *new_id_node (char *id_name, struct list *ids)
         struct treenode *tree = new_op_node (IDENT, (struct treenode *)NULL, (struct treenode *)NULL);
 
         /* tree->reg = get_node_reg (id_name, ids);
+        list_dump (ids);
          */
         tree->name = id_name;
         

@@ -42,7 +42,8 @@ int cnt = 0;
 @attributes { struct list *idef; } Program
 @attributes { int val; } num
 
-@traversal @preorder err codegen
+@traversal @preorder err
+@traversal @postorder codegen
 
 %%
 StartProgram	: Program
@@ -65,7 +66,7 @@ Def             : ident '=' Lambda
                                 @i @Lambda.idef@ = @Def.idef@;
                                 @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
 				@codegen func_header (@ident.name@);
-				@codegen invoke_burm(@Def.tn@);
+				@codegen invoke_burm (@Def.tn@);
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
@@ -73,6 +74,7 @@ Lambda          : t_fun ident t_assign Expr t_end
 				@i @Lambda.sdef@ = list_create (); 
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, @Expr.variable@), @Expr.tn@);
+                                @err list_dump (@Expr.variable@);
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
