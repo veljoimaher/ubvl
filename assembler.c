@@ -16,29 +16,40 @@ void func_header (char *fname)
 
 char *assembler_asgn (struct treenode *tn)
 {
-        printf("POCETAK\n");
+        char *r = tn->left->reg;
 
-        return newreg();
+        r = tn->left->reg;
+        printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf("\tret\n");
 
+        return r;
 }
 char *assembler_lasgn_reg_expr (struct treenode *tn)
 {
-        printf("func param: %d\n", tn->op);
-        return newreg();
+        char *r = tn->left->reg;
 
+        printf ("lasgn(reg, expr)\n");
+        r = tn->left->reg;
+        printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+
+        return r;
 }
 char *assembler_lasgn_reg_reg (struct treenode *tn)
 {
-        printf("lambda reg reg\n");
-        return newreg();
+        char *r = tn->left->reg;
 
+        printf ("lasgn(reg, reg)\n");
+        r = tn->left->reg;
+        printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+
+        return r;
 }
 
 char *assembler_add_id_id (struct treenode *tn)
 {
         char *r = newreg();
-        printf ("ADD (reg, reg)\n");
-        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, r);
+        printf ("add(id, id)\n");
+        printf ("\tmov %%%s, %%%s\n", tn->left->reg, r);
         printf ("\taddq %%%s, %%%s\n", tn->right->reg, r);
 
         return r;
@@ -46,7 +57,9 @@ char *assembler_add_id_id (struct treenode *tn)
 }
 char *assembler_add_id_num (struct treenode *tn)
 {
-        printf ("ADD (reg, rc)\n");
+        printf ("add(id, num)\n");
+        printf ("\taddq %%%s, %%%s\n", tn->left->reg, tn->right->reg);
+
         return newreg();
 
 }
@@ -257,6 +270,7 @@ char *assembler_eq (struct treenode *tn)
 
 char *assembler_not (struct treenode *lc)
 {
+
 
         return newreg();
 }
