@@ -19,7 +19,7 @@ char *assembler_asgn (struct treenode *tn)
         char *r = tn->left->reg;
 
         r = tn->left->reg;
-        printf("\tmov %%%s, %rax\n", tn->right->reg);
+        printf("\tmov %%%s, %%rax\n", tn->right->reg);
         printf("\tret\n");
 
         return r;
