@@ -43,7 +43,7 @@ int cnt = 0;
 @attributes { int val; } num
 
 @traversal @preorder err
-@traversal @preorder codegen
+@traversal @postorder codegen
 
 %%
 StartProgram	: Program
@@ -62,12 +62,8 @@ Program         :
                 
 Def             : ident '=' Lambda
                         @{     
-                                /*@i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 10); 
-                                */
-                                @i @Def.sdef@ = insert_elem (DEFINITION, list_create(), @ident.name@, 10); 
+                                @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 10); 
                                 @i @Lambda.idef@ = @Def.idef@;
-				@codegen reg_init (@Lambda.sdef@);
-                                @codegen list_dump (@Lambda.sdef@);
                                 @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
 				@codegen func_header (@ident.name@);
 				@codegen invoke_burm (@Def.tn@);
@@ -75,8 +71,10 @@ Def             : ident '=' Lambda
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
                         @{
+				@i @Lambda.sdef@ = list_create (); 
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
-				@i @Lambda.sdef@ = @Expr.variable@;
+				@codegen reg_init (@Expr.variable@);
+                                @codegen list_dump (@Expr.variable@);
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, @Expr.variable@), @Expr.tn@);
                         @}
                 ;
