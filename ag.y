@@ -18,7 +18,7 @@ void yyerror(const char *str)
 main()
 {
         yyparse();
-        printf("Success\n");
+        /* printf("Success\n"); */
         return 0;
 }
 
@@ -227,7 +227,7 @@ Term            : '(' Expr ')'
                 | ident
                         @{
                                 @err isPresent (@Term.variable@, @ident.name@);
-                                @i @Term.tn@ = new_id_node (@ident.name@, @Term.variable@);
+                                @i @Term.tn@ = new_id_node (@ident.name@, reg_init(@Term.variable@));
                         @}
                 ;
 %%

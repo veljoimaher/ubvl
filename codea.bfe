@@ -18,7 +18,7 @@
 
 %%
 
-stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode); 
+stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode);
 
 lambda: LASGN (reg, expr)               # 1 # bnode->reg = assembler_lasgn_reg_expr (bnode);
 lambda: LASGN (reg, reg)		# 2 # bnode->reg = assembler_lasgn_reg_reg (bnode); 
@@ -73,7 +73,7 @@ term: EQ (term, term)			# 3 # bnode->reg = assembler_eq (bnode);
 
 rc: num                                 # 0 #
 
-reg: IDENT                              # 0 
+reg: IDENT                              # 0 #
 num: NUM                                # 0 # bnode->reg = newreg (); printf("\tmovq $%i, %%%s\n", bnode->val, bnode->reg);
 
 %%

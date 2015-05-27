@@ -32,10 +32,8 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
 struct treenode *new_id_node (char *id_name, struct list *ids)
 {
         struct treenode *tree = new_op_node (IDENT, (struct treenode *)NULL, (struct treenode *)NULL);
-
         tree->reg = get_node_reg (id_name, ids);
         tree->name = id_name;
-        printf ("%s reg: %s\n", tree->name, tree->reg);
         
         /* treenode_dump (tree); */
         return tree;
@@ -56,9 +54,6 @@ char *get_node_reg (char *id_name, struct list *ids)
         struct node *n;
         char *reg = "NULL";
 
-	printf ("list dump in get_node_reg\n");
-	list_dump (ids);
-	printf ("\n");
         n = list_head (ids);
         while ( (n = list_next (n)) != list_end (ids))
         {
@@ -68,6 +63,7 @@ char *get_node_reg (char *id_name, struct list *ids)
 
         return reg;
 }
+
 void treenode_dump (struct treenode *tn)
 {
         if (tn == NULL)

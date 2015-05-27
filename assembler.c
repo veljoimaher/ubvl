@@ -79,6 +79,7 @@ char *assembler_add_num_num (struct treenode *tn)
 }
 char *assembler_add (struct treenode *tn)
 {
+	tree_dump (tn);
         printf ("ADD (term, term)\n");
         return newreg();
 
