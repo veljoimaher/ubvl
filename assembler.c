@@ -20,6 +20,7 @@ char *assembler_asgn (struct treenode *tn)
 
         r = tn->left->reg;
         printf("\tmov %%%s, %%rax\n", tn->right->reg);
+        printf("\tleave\n");
         printf("\tret\n");
 
         return r;
@@ -91,12 +92,12 @@ char *assembler_sub_id_num (struct treenode *tn)
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq %%%s, %%%s\n", tn->right->reg, reg);
         return reg;
-
 }
 char *assembler_sub_num_id (struct treenode *tn)
 {
-        printf ("\tsubq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\tsubq %%%s, %%%s\n", tn->right->reg, tn->left->reg); 
         return tn->left->reg;
+
 }
 char *assembler_sub_num_num (struct treenode *tn)
 {
