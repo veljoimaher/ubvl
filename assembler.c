@@ -143,32 +143,36 @@ char *assembler_mul (struct treenode *tn)
 
 char *assembler_and_id_id (struct treenode *tn)
 {
-        printf ("\tsubq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\tand %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         return tn->left->reg;
 
 }
 char *assembler_and_id_num (struct treenode *tn)
 {
+printf ("\tand %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        return tn->left->reg;
 
-        printf ("AND (reg, rc)\n");
-        return newreg();
+
 }
 char *assembler_and_num_id (struct treenode *tn)
 {
-        printf ("AND (rc, reg)\n");
-        return newreg();
+ printf ("\tand %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        return tn->left->reg;
+
 
 }
 char *assembler_and_num_num (struct treenode *tn)
 {
-        printf ("AND (rc, rc)\n");
-        return newreg();
+  printf ("\tand %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        return tn->left->reg;
+
 
 }
 char *assembler_and (struct treenode *tn)
 {
-        printf ("AND (term, term)\n");
-        return newreg();
+   printf ("\tand %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        return tn->left->reg;
+
 
 }
 
