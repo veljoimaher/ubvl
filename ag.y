@@ -43,7 +43,7 @@ int cnt = 0;
 @attributes { int val; } num
 
 @traversal @preorder err
-@traversal @postorder codegen
+@traversal @preorder codegen
 
 %%
 StartProgram	: Program
@@ -67,7 +67,7 @@ Def             : ident '=' Lambda
                                 @i @Def.sdef@ = insert_elem (DEFINITION, list_create(), @ident.name@, 10); 
                                 @i @Lambda.idef@ = @Def.idef@;
 				@codegen reg_init (@Lambda.sdef@);
-                                @err list_dump (@Lambda.sdef@);
+                                @codegen list_dump (@Lambda.sdef@);
                                 @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
 				@codegen func_header (@ident.name@);
 				@codegen invoke_burm (@Def.tn@);
