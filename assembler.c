@@ -19,7 +19,7 @@ char *assembler_asgn (struct treenode *tn)
         char *r = tn->left->reg;
 
         r = tn->left->reg;
-        printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf("\tmov %%%s, %rax\n", tn->right->reg);
         printf("\tret\n");
 
         return r;
@@ -29,9 +29,15 @@ char *assembler_lasgn_reg_expr (struct treenode *tn)
         char *r = tn->left->reg;
 
         printf ("lasgn(reg, expr)\n");
-        r = tn->left->reg;
-        printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-
+        if (tn->left->reg != NULL)
+        {
+                r = tn->left->reg;
+                printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        }
+        else
+        {
+                r = tn->right->reg;
+        }
         return r;
 }
 char *assembler_lasgn_reg_reg (struct treenode *tn)
@@ -60,7 +66,7 @@ char *assembler_add_id_num (struct treenode *tn)
         printf ("add(id, num)\n");
         printf ("\taddq %%%s, %%%s\n", tn->left->reg, tn->right->reg);
 
-        return newreg();
+        return tn->right->reg;
 
 }
 char *assembler_add_num_id (struct treenode *tn)
