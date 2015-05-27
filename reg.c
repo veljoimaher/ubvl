@@ -27,6 +27,9 @@ void reg_init (struct list *l)
 	int i;
 	int nr_params = 0;
 	struct node *n = list_head (l);
+
+	printf ("Starting reg_init() and dumping list before modifications\n");
+	list_dump(l);
 	while ( (n = list_next (n)) != list_end (l))
 	{
 		if (n->type == PARAMETER)
@@ -37,6 +40,9 @@ void reg_init (struct list *l)
 			nr_params++;
 		}
 	}
+	printf ("\nFinishing reg_init() and dumping list before exiting\n");
+	list_dump (l);
+	printf ("\n");
 }
 
 char * newreg()
