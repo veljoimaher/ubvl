@@ -15,7 +15,7 @@ struct reg
         int type;
 };
 
-void reg_init (struct list *l);
+struct list * reg_init (struct list *l);
 char * newreg();
 void freereg(char * reg);
 void freeallreg ();
