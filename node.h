@@ -10,6 +10,7 @@ struct node
 	struct node *next;
 	struct node *prev;
 	char *name;
+	char *reg;
         int type;
         int val;
 };
