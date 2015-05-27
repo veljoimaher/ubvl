@@ -28,15 +28,7 @@ char *assembler_lasgn_reg_expr (struct treenode *tn)
 {
         char *r = tn->left->reg;
 
-        if (tn->left->reg != NULL)
-        {
-                r = tn->left->reg;
-                printf("\tmov %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        }
-        else
-        {
-                r = tn->right->reg;
-        }
+        r = tn->right->reg;
         return r;
 }
 char *assembler_lasgn_reg_reg (struct treenode *tn)
