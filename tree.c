@@ -54,15 +54,16 @@ struct treenode *new_num_node (long num)
 char *get_node_reg (char *id_name, struct list *ids)
 {
         struct node *n;
+        char *reg = "NULL";
 
         n = list_head (ids);
         while ( (n = list_next (n)) != list_end (ids))
         {
-                if ((strcmp (n->name, id_name)) && n->type == PARAMETER)
-                        return n->reg;
+                if ((strcmp (n->name, id_name) == 0) && (n->type == PARAMETER))
+                        reg = n->reg;
         }
 
-        return "NULL";
+        return reg;
 }
 void treenode_dump (struct treenode *tn)
 {
