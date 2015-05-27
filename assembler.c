@@ -67,7 +67,7 @@ char *assembler_add_num_num (struct treenode *tn)
 {
         printf ("\taddq %%%s, %%%s\n", tn->left->reg, tn->right->reg);
         return tn->right->reg;
-        
+
 }
 char *assembler_add (struct treenode *tn)
 {
@@ -141,7 +141,7 @@ char *assembler_and_id_id (struct treenode *tn)
 {
         printf ("AND (reg, reg)\n");
         return newreg();
-        
+
 }
 char *assembler_and_id_num (struct treenode *tn)
 {
@@ -198,7 +198,7 @@ char *assembler_dot (struct treenode *tn)
         return newreg();
 
 }
- 
+
 char *assembler_less_id_id (struct treenode *tn)
 {
         printf ("LESS (reg, reg)\n");
@@ -263,9 +263,8 @@ char *assembler_eq (struct treenode *tn)
 
 char *assembler_not (struct treenode *lc)
 {
-
-
-        return newreg();
+        printf ("\tnot %%%s\n", lc->left->reg);
+        return lc->left->reg;
 }
 char *assembler_head (struct treenode *lc)
 {
