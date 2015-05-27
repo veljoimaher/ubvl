@@ -90,8 +90,8 @@ char *assembler_sub_id_num (struct treenode *tn)
 }
 char *assembler_sub_num_id (struct treenode *tn)
 {
-        printf ("\tsubq %%%s, %%%s\n", tn->left->reg, tn->right->reg);
-        return tn->right->reg;
+        printf ("\tsubq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        return tn->left->reg;
 }
 char *assembler_sub_num_num (struct treenode *tn)
 {
