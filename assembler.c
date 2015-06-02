@@ -422,8 +422,8 @@ char *assembler_less_id_id (struct treenode *tn)
 char *assembler_less_id_num (struct treenode *tn)
 {
         char *reg = newreg();
-        char *l = newreg ();
-  /* 
+       /* char *l = newreg ();
+  
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         
@@ -458,8 +458,8 @@ char *assembler_less_id_num (struct treenode *tn)
 char *assembler_less_num_id (struct treenode *tn)
 {
         char *reg = newreg();
-        char *r = newreg ();
-       /* 
+       /* char *r = newreg ();
+        
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
 
