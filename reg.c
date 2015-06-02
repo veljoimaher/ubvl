@@ -142,7 +142,7 @@ void freereg(char * reg)
 void freeallreg ()
 {
 	int i;
-	all_regs[0].used = 0;
+	all_regs[0].used = 1;
 	all_regs[0].type = PARAM;
 
 	for (i=1; i<NR_REGS; i++)
