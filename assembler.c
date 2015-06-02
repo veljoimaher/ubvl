@@ -459,7 +459,7 @@ char *assembler_less_num_id (struct treenode *tn)
 {
         char *reg = newreg();
         char *r = newreg ();
-        
+       /* 
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
 
@@ -471,6 +471,25 @@ char *assembler_less_num_id (struct treenode *tn)
         printf ("\tsetz %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
+*/
+        printf ("\tbt $0, %%%s\n", tn->right->reg);
+        printf ("\tjc raisesig\n");
+        
+        /* printf ("\txor %%%s, %%%s\n", reg, reg); */
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, reg);
+        printf ("\tshr $1, %%%s\n", reg);
+        
+	/* cmp 
+	 * dst > src  -> CF = 0, ZF = 0
+	 * dst == src -> CF = 0, ZF = 1
+	 * dst < src  -> CF = 1, ZF = 0
+	 * x<3 - leftreg = x, right reg = 3
+	 */
+        printf ("\tcmp %%%s, %%%s\n", reg, tn->left->reg);
+        printf ("\tsetl %%%s\n", get_reg_name (reg, R8L));
+        printf ("\tshl $1, %%%s\n", reg);
+        return reg;
+
 
 }
 char *assembler_less_num_num (struct treenode *tn)
