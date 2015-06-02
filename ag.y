@@ -114,13 +114,15 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 /* @i @Expr.0.tn@ = new_op_node (MUL, @Term.0.tn@, @Term.1.tn@); */
 				@i @Expr.0.tn@ = @MulTerm.tn@;
                         @}
-                | Term t_and Term AndTerm
+                | AndTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (AND, @Term.0.tn@, @Term.1.tn@);
+                                /* @i @Expr.0.tn@ = new_op_node (AND, @Term.0.tn@, @Term.1.tn@); */
+				@i @Expr.0.tn@ = @AndTerm.tn@;
                         @}
-                | Term '.' Term DotTerm
+                | DotTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (DOT, @Term.0.tn@, @Term.1.tn@);
+                                /* @i @Expr.0.tn@ = new_op_node (DOT, @Term.0.tn@, @Term.1.tn@); */
+				@i @Expr.0.tn@ = @DotTerm.tn@;
                         @}
                 | Term '<' Term
                         @{
@@ -181,18 +183,22 @@ Ops             : t_not Ops
                         @{
                         @}
                 ;
-DotTerm         : 
+DotTerm         :
+	        Term '.' Term	
                 @{
-                                @i @DotTerm.0.tn@ = new_op_node (DOT, (struct treenode *)NULL, (struct treenode *)NULL);
+                                /* @i @DotTerm.0.tn@ = new_op_node (DOT, (struct treenode *)NULL, (struct treenode *)NULL); */
+				@i @DotTerm.0.tn@ = new_op_node (DOT, @Term.0.tn@, @Term.1.tn@);
                 @}
                 | DotTerm '.' Term
                 @{
                                 @i @DotTerm.0.tn@ = new_op_node (DOT, @DotTerm.1.tn@, @Term.tn@);
                 @}
                 ;
-AndTerm         : 
+AndTerm         :
+	        Term t_and Term	
                 @{
-                                @i @AndTerm.0.tn@ = new_op_node (AND, (struct treenode *)NULL, (struct treenode *)NULL);
+                               /* @i @AndTerm.0.tn@ = new_op_node (AND, (struct treenode *)NULL, (struct treenode *)NULL); */
+				@i @AndTerm.0.tn@ = new_op_node (AND, @Term.0.tn@, @Term.1.tn@);
                 @}
 
                 | AndTerm t_and Term
