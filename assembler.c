@@ -176,9 +176,8 @@ char *assembler_sub_num_id (struct treenode *tn)
 }
 char *assembler_sub_num_num (struct treenode *tn)
 {
-        printf ("\tsubq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\tshl $1, %%%s\n", tn->left->reg);
-        return tn->left->reg;
+        printf ("NOT USED\n");
+        return newreg ();
 
 }
 char *assembler_sub (struct treenode *tn)
@@ -284,7 +283,7 @@ char *assembler_mul (struct treenode *tn)
 }
 char *assembler_mul_num_num (struct treenode *tn)
 {
-        printf ("MUL (rc, rc)\n");
+        printf ("NOT USED\n");
         return newreg();
 
 }
@@ -338,8 +337,8 @@ char *assembler_and_num_id (struct treenode *tn)
 }
 char *assembler_and_num_num (struct treenode *tn)
 {
-        printf ("\tand %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        return tn->left->reg;
+        printf ("NOT USED\n");
+        return newreg ();
 
 
 }
@@ -397,45 +396,68 @@ char *assembler_dot (struct treenode *tn)
 
 char *assembler_less_id_id (struct treenode *tn)
 {
-        printf ("LESS (reg, reg)\n");
-        return newreg();
+        char *reg = newreg ();
+        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\tsetc %%%s\n", reg);
+        /*printf ("\tjnc notless\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("notless:\n");
+        */
+        printf ("\tshl $1, %%%s\n", reg);
+        return reg;
 
 }
 char *assembler_less_id_num (struct treenode *tn)
 {
-        printf ("LESS (reg, rc)\n");
-        return newreg();
+        char *reg = newreg ();
+        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\tsetc %%%s\n", reg);
+        /*printf ("\tjnc notless\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("notless:\n");
+        */printf ("\tshl $1, %%%s\n", reg);
+        return reg;
 
 }
 char *assembler_less_num_id (struct treenode *tn)
 {
-        printf ("LESS (rc, reg)\n");
-        return newreg();
+        char *reg = newreg ();
+        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\tsetc %%%s\n", reg);
+        /*printf ("\tjnc notless\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("notless:\n");
+        */
+        printf ("\tshl $1, %%%s\n", reg);
+        return reg;
 
 }
 char *assembler_less_num_num (struct treenode *tn)
 {
-        printf ("LESS (rc, rc)\n");
+        printf ("NOT USED\n");
         return newreg();
 
 }
 char *assembler_less (struct treenode *tn)
 {
-        printf ("LESS (term, term)\n");
-        return newreg();
-
+        char *reg = newreg ();
+        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
+        printf ("\tsetc %%%s\n", reg);
+        /*printf ("\tjnc notless\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("notless:\n");
+        */
+        printf ("\tshl $1, %%%s\n", reg);
+        return reg;
 }
 
 char *assembler_eq_id_id (struct treenode *tn)
 {
 
         char *reg = newreg ();
-        printf ("\txor %%%s, %%%s\n", reg, reg);
         printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
-        printf ("\tjnz noteq\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("noteq:\n");
-        printf ("NOT FINISHED\n");
+        printf ("\tsetc %%%s\n", reg);
+        printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
 }
@@ -447,11 +469,8 @@ char *assembler_eq_id_num (struct treenode *tn)
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
         
-        printf ("\txor %%%s, %%%s\n", reg, reg);
         printf ("\tcmp %%%s, %%%s\n", l, tn->right->reg);
-        printf ("\tjnz noteq\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("noteq:\n");
+        printf ("\tsetc %%%s\n", reg);
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -464,11 +483,8 @@ char *assembler_eq_num_id (struct treenode *tn)
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
         
-        printf ("\txor %%%s, %%%s\n", reg, reg);
         printf ("\tcmp %%%s, %%%s\n", tn->left->reg, r);
-        printf ("\tjnz noteq\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("noteq:\n");
+        printf ("\tsetc %%%s\n", reg);
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -478,22 +494,15 @@ char *assembler_eq_num_num (struct treenode *tn)
 {
   
         char *reg = newreg ();
-        printf ("\txor %%%s, %%%s\n", reg, reg);
-        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
-        printf ("\tjnz noteq\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("noteq:\n");
+        printf ("NOT USED\n");
         return reg;
 
 }
 char *assembler_eq (struct treenode *tn)
 {
         char *reg = newreg ();
-        printf ("\txor %%%s, %%%s\n", reg, reg);
         printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
-        printf ("\tjnz noteq\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("noteq:\n");
+        printf ("\tsetc %%%s\n", reg);
         return reg;
 
 }
@@ -516,9 +525,7 @@ char *assembler_head (struct treenode *tn)
         printf ("\tsubq $1, %%%s\n", reg);
  
         printf ("\tmovq %%%s, %%%s\n", reg, l);
-        printf ("\tshr $1, %%%s\n", l);
-
-       
+        printf ("\tshl $1, %%%s\n", l);
         return reg;
 
 }
@@ -536,6 +543,7 @@ char *assembler_isnum (struct treenode *tn)
         printf ("\tmovq $1, %%%s\n", reg);
         
         printf ("\tnotnum:\n");
+        printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
 }
@@ -548,6 +556,7 @@ char *assembler_islist (struct treenode *tn)
         printf ("\tmovq $1, %%%s\n", reg);
         
         printf ("\tnotlist:\n");
+        printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
 }
@@ -556,6 +565,7 @@ char *assembler_isfun (struct treenode *tn)
         char *l = newreg ();
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq $0, %%%s\n", l);
+        printf ("\tshl $1, %%%s\n", l);
         return l;
 
 }
