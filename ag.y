@@ -77,6 +77,7 @@ Lambda          : t_fun ident t_assign Expr t_end
                                 @codegen list_dump (@Expr.variable@);
                                 */
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, reg_init(@Expr.variable@)), @Expr.tn@);
+				@codegen tree_dump (@Expr.tn@);
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
@@ -99,17 +100,19 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                 | Ops
                         @{
                         @}
-                | Term '+' Term PlusTerm
+                | PlusTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (ADD, @Term.0.tn@, @Term.1.tn@);
+                              /*  @i @Expr.0.tn@ = new_op_node (ADD, @Term.0.tn@, @Term.1.tn@); */
+				@i @Expr.0.tn@ = @PlusTerm.tn@;
                         @}
                 | Term '-' Term
                         @{
                                 @i @Expr.0.tn@ = new_op_node (SUB, @Term.0.tn@, @Term.1.tn@);
                         @}
-                | Term '*' Term MulTerm
+                | MulTerm
                         @{
-                                @i @Expr.0.tn@ = new_op_node (MUL, @Term.0.tn@, @Term.1.tn@);
+                                /* @i @Expr.0.tn@ = new_op_node (MUL, @Term.0.tn@, @Term.1.tn@); */
+				@i @Expr.0.tn@ = @MulTerm.tn@;
                         @}
                 | Term t_and Term AndTerm
                         @{
@@ -198,8 +201,10 @@ AndTerm         :
                 @}
                 ;
 PlusTerm        : 
+		Term '+' Term
                 @{
-                                @i @PlusTerm.0.tn@ = new_op_node (ADD, (struct treenode *)NULL, (struct treenode *)NULL);
+                                /* @i @PlusTerm.0.tn@ = new_op_node (ADD, (struct treenode *)NULL, (struct treenode *)NULL); */
+				@i @PlusTerm.0.tn@ = new_op_node (ADD, @Term.0.tn@, @Term.1.tn@);	
                 @}
 
                 | PlusTerm '+' Term
@@ -208,8 +213,10 @@ PlusTerm        :
                 @}
                 ;
 MulTerm         : 
+		Term '*' Term
                 @{
-                                @i @MulTerm.0.tn@ = new_op_node (MUL, (struct treenode *)NULL, (struct treenode *)NULL);
+                                 /* @i @MulTerm.0.tn@ = new_op_node (MUL, (struct treenode *)NULL, (struct treenode *)NULL); */
+				@i @MulTerm.0.tn@ = new_op_node (MUL, @Term.0.tn@, @Term.1.tn@);
                 @}
 
                 | MulTerm '*' Term
