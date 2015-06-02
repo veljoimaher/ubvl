@@ -366,18 +366,21 @@ char *assembler_and (struct treenode *tn)
 
 char *assembler_dot_id_id (struct treenode *tn)
 {
+	/* printf ("id.id\n"); */
         printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
         return tn->right->reg;
 
 }
 char *assembler_dot_id_num (struct treenode *tn)
 {
+	/* printf ("id.num\n"); */
         printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
         return tn->right->reg;
 
 }
 char *assembler_dot_num_id (struct treenode *tn)
 {
+	/* printf ("num.id\n"); */
         printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
         return tn->right->reg;
 }
@@ -388,6 +391,7 @@ char *assembler_dot_num_num (struct treenode *tn)
 }
 char *assembler_dot (struct treenode *tn)
 {
+	/* printf ("term.term\n"); */
         printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
         return tn->right->reg;
 
@@ -419,7 +423,7 @@ char *assembler_less_id_num (struct treenode *tn)
 {
         char *reg = newreg();
         char *l = newreg ();
-   
+  /* 
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         
@@ -429,6 +433,24 @@ char *assembler_less_id_num (struct treenode *tn)
         
         printf ("\tcmp %%%s, %%%s\n", l, tn->right->reg);
         printf ("\tsetc %%%s\n", get_reg_name (reg, R8L));
+        printf ("\tshl $1, %%%s\n", reg);
+        return reg;
+*/
+        printf ("\tbt $0, %%%s\n", tn->left->reg);
+        printf ("\tjc raisesig\n");
+        
+        /* printf ("\txor %%%s, %%%s\n", reg, reg); */
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
+        printf ("\tshr $1, %%%s\n", reg);
+        
+	/* cmp 
+	 * dst > src  -> CF = 0, ZF = 0
+	 * dst == src -> CF = 0, ZF = 1
+	 * dst < src  -> CF = 1, ZF = 0
+	 * x<3 - leftreg = x, right reg = 3
+	 */
+        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, reg);
+        printf ("\tsetl %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
