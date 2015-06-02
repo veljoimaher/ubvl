@@ -365,31 +365,25 @@ char *assembler_and (struct treenode *tn)
 
 char *assembler_dot_id_id (struct treenode *tn)
 {
-        printf ("DOT (reg, reg)\n");
         return newreg();
 
 }
 char *assembler_dot_id_num (struct treenode *tn)
 {
-        printf ("DOT (reg, rc)\n");
         return newreg();
 
 }
 char *assembler_dot_num_id (struct treenode *tn)
 {
-
-        printf ("DOT (rc, reg)\n");
         return newreg();
 }
 char *assembler_dot_num_num (struct treenode *tn)
 {
 
-        printf ("DOT (rc, rc)\n");
         return newreg();
 }
 char *assembler_dot (struct treenode *tn)
 {
-        printf ("DOT (term, term)\n");
         return newreg();
 
 }
@@ -399,10 +393,6 @@ char *assembler_less_id_id (struct treenode *tn)
         char *reg = newreg ();
         printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         printf ("\tsetc %%%s\n", reg);
-        /*printf ("\tjnc notless\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("notless:\n");
-        */
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -412,10 +402,7 @@ char *assembler_less_id_num (struct treenode *tn)
         char *reg = newreg ();
         printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         printf ("\tsetc %%%s\n", reg);
-        /*printf ("\tjnc notless\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("notless:\n");
-        */printf ("\tshl $1, %%%s\n", reg);
+        printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
 }
@@ -424,10 +411,6 @@ char *assembler_less_num_id (struct treenode *tn)
         char *reg = newreg ();
         printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         printf ("\tsetc %%%s\n", reg);
-        /*printf ("\tjnc notless\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("notless:\n");
-        */
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -443,10 +426,6 @@ char *assembler_less (struct treenode *tn)
         char *reg = newreg ();
         printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         printf ("\tsetc %%%s\n", reg);
-        /*printf ("\tjnc notless\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        printf ("notless:\n");
-        */
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 }
@@ -531,7 +510,16 @@ char *assembler_head (struct treenode *tn)
 }
 char *assembler_tail (struct treenode *tn)
 {
-        return newreg();
+        char *reg = newreg ();
+        char *l = newreg ();
+        printf ("\tbt $0, %%%s\n", tn->left->reg);
+        printf ("\tjnc raisesig\n");
+        printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
+        printf ("\tsubq $1, %%%s\n", reg);
+ 
+        printf ("\tmovq %%%s, 8(%%%s)\n", reg, l);
+        printf ("\tshl $1, %%%s\n", l);
+        return reg;
 
 }
 char *assembler_isnum (struct treenode *tn)
