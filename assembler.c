@@ -394,27 +394,58 @@ char *assembler_dot (struct treenode *tn)
 
 char *assembler_less_id_id (struct treenode *tn)
 {
-        char *reg = newreg ();
-        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\tsetc %%%s\n", reg);
+        char *reg = newreg();
+        char *l = newreg ();
+        char *r = newreg ();
+  
+        printf ("\tbt $0, %%%s\n", tn->left->reg);
+        printf ("\tjc raisesig\n");
+        printf ("\tbt $0, %%%s\n", tn->right->reg);
+        printf ("\tjc raisesig\n");
+
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", l);
+        printf ("\tshr $1, %%%s\n", r);
+        
+        printf ("\tcmp %%%s, %%%s\n", l, r);
+        printf ("\tsetc %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
-
-}
+ }
 char *assembler_less_id_num (struct treenode *tn)
 {
-        char *reg = newreg ();
-        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\tsetc %%%s\n", reg);
+        char *reg = newreg();
+        char *l = newreg ();
+   
+        printf ("\tbt $0, %%%s\n", tn->left->reg);
+        printf ("\tjc raisesig\n");
+        
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tshr $1, %%%s\n", l);
+        
+        printf ("\tcmp %%%s, %%%s\n", l, tn->right->reg);
+        printf ("\tsetc %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
 }
 char *assembler_less_num_id (struct treenode *tn)
 {
-        char *reg = newreg ();
-        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\tsetc %%%s\n", reg);
+        char *reg = newreg();
+        char *r = newreg ();
+        
+        printf ("\tbt $0, %%%s\n", tn->right->reg);
+        printf ("\tjc raisesig\n");
+
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", r);
+        
+        printf ("\tcmp %%%s, %%%s\n", r, tn->left->reg);
+        printf ("\tsetz %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -427,36 +458,60 @@ char *assembler_less_num_num (struct treenode *tn)
 }
 char *assembler_less (struct treenode *tn)
 {
-        char *reg = newreg ();
-        printf ("\tcmp %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\tsetc %%%s\n", reg);
+        char *reg = newreg();
+        char *l = newreg ();
+        char *r = newreg ();
+  
+        if (tn->left->op == NUM)
+        {
+                printf ("\tbt $0, %%%s\n", tn->left->reg);
+                printf ("\tjc raisesig\n");
+        }
+        if (tn->right->op == NUM)
+        {
+                printf ("\tbt $0, %%%s\n", tn->right->reg);
+                printf ("\tjc raisesig\n");
+        }
+
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", l);
+        printf ("\tshr $1, %%%s\n", r);
+        
+        printf ("\tcmp %%%s, %%%s\n", l, r);
+        printf ("\tsetc %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
-}
+ }
 
 char *assembler_eq_id_id (struct treenode *tn)
 {
-
-        char *reg = get_reg_name (newreg(), R8L);
-        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
-        printf ("\tsetc %%%s\n", reg);
+        char *reg = newreg();
+        char *l = newreg ();
+        char *r = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", l);
+        printf ("\tshr $1, %%%s\n", r);
+        
+        printf ("\tcmp %%%s, %%%s\n", l, r);
+        printf ("\tsetz %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
-
 }
 char *assembler_eq_id_num (struct treenode *tn)
 {
  
         char *reg = newreg();
-        char *reg8;
         char *l = newreg ();
         printf ("\txor %%%s, %%%s\n", reg, reg);
-        reg8 = get_reg_name (reg, R8L);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
         
         printf ("\tcmp %%%s, %%%s\n", l, tn->right->reg);
-        printf ("\tsetz %%%s\n", reg8);
+        printf ("\tsetz %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -464,17 +519,16 @@ char *assembler_eq_id_num (struct treenode *tn)
 char *assembler_eq_num_id (struct treenode *tn)
 {
  
-        char *reg = get_reg_name (newreg(), R8L);
+        char *reg = newreg();
         char *r = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
         
-        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, r);
-        printf ("\tsetc %%%s\n", reg);
+        printf ("\tcmp %%%s, %%%s\n", r, tn->left->reg);
+        printf ("\tsetz %%%s\n", get_reg_name (reg, R8L));
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
-
-
 }
 char *assembler_eq_num_num (struct treenode *tn)
 {
@@ -486,11 +540,19 @@ char *assembler_eq_num_num (struct treenode *tn)
 }
 char *assembler_eq (struct treenode *tn)
 {
-        char *reg = get_reg_name (newreg(), R8L);
-        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
-        printf ("\tsetc %%%s\n", reg);
+        char *reg = newreg();
+        char *l = newreg ();
+        char *r = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", l);
+        printf ("\tshr $1, %%%s\n", r);
+        
+        printf ("\tcmp %%%s, %%%s\n", l, r);
+        printf ("\tsetz %%%s\n", get_reg_name (reg, R8L));
+        printf ("\tshl $1, %%%s\n", reg);
         return reg;
-
 }
 
 char *assembler_not (struct treenode *tn)
