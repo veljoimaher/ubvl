@@ -188,9 +188,9 @@ DotTerm         :
                                 /* @i @DotTerm.0.tn@ = new_op_node (DOT, (struct treenode *)NULL, (struct treenode *)NULL); */
 				@i @DotTerm.0.tn@ = new_op_node (DOT, @Term.0.tn@, @Term.1.tn@);
                 @}
-                | DotTerm '.' Term
+                | Term '.' DotTerm
                 @{
-                                @i @DotTerm.0.tn@ = new_op_node (DOT, @DotTerm.1.tn@, @Term.tn@);
+                                @i @DotTerm.0.tn@ = new_op_node (DOT, @Term.tn@, @DotTerm.1.tn@);
                 @}
                 ;
 AndTerm         :
