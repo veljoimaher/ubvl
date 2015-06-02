@@ -450,6 +450,7 @@ char *assembler_eq_id_num (struct treenode *tn)
         char *reg = newreg();
         char *reg8;
         char *l = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
         reg8 = get_reg_name (reg, R8L);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
