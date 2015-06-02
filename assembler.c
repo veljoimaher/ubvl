@@ -20,8 +20,9 @@ char *assembler_asgn (struct treenode *tn)
 
         r = tn->left->reg;
         printf("\tmov %%%s, %%rax\n", tn->right->reg);
-        printf("\tret\n");
+        printf("\tret\n\n");
 
+	freeallreg ();
         return r;
 }
 char *assembler_lasgn_reg_expr (struct treenode *tn)
@@ -563,34 +564,37 @@ char *assembler_not (struct treenode *tn)
 
         return tn->left->reg;
 }
+/*
+ if WORD LSB == 0, data is 63bit number - to get value of the number use bitwise architmetical right shift
+
+ if WORD LSB == 1 && LSB+1 BIT == 0 -> data is pointer to list field
+ - to get tag-less data substract 1 from data (address of the field must be always divisible with 8)
+ - head of the listfield is on offset 0 of tag-less pointer. next/rest field is on offset 8.
+ - one list field is 16 bytes long
+*/
 char *assembler_head (struct treenode *tn)
 {
         char *reg = newreg ();
-        char *l = newreg ();
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjnc raisesig\n");
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq $1, %%%s\n", reg);
- 
-        printf ("\tmovq %%%s, %%%s\n", reg, l);
-        printf ("\tshl $1, %%%s\n", l);
+	printf ("\tmovq 0(%%%s), %%%s\n", reg, reg);
         return reg;
 
 }
+
 char *assembler_tail (struct treenode *tn)
 {
-        char *reg = newreg ();
-        char *l = newreg ();
+	char *reg = newreg ();
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjnc raisesig\n");
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq $1, %%%s\n", reg);
- 
-        printf ("\tmovq %%%s, 8(%%%s)\n", reg, l);
-        printf ("\tshl $1, %%%s\n", l);
+	printf ("\tmovq 8(%%%s), %%%s\n", reg, reg);
         return reg;
-
 }
+
 char *assembler_isnum (struct treenode *tn)
 {
         char *reg = newreg ();
