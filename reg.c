@@ -22,6 +22,26 @@ struct reg all_regs[NR_REGS] =
 	{"rax", 0, TEMP}
 };
 
+struct reg_map all_map[] = 
+{
+	/* r8 - r15 does not have 8bit high register */
+	/* r64,   r32,  r16,  r8h,  r8l */
+	{ "rax", "eax", "ax", "ah", "al" },
+	{ "rbx", "ebx", "bx", "bh", "bl" },
+	{ "rcx", "ecx", "cx", "ch", "cl" },
+	{ "rdx", "edx", "dx", "dh", "dl" },
+	{ "rsi", "esi", "si", "sih", "sil" },
+	{ "rdi", "edi", "di", "dih", "dil" },
+	{ "r8", "r8d", "r8w", "r8b", "r8b" },
+	{ "r9", "r9d", "r9w", "r9b", "r9b" },
+	{ "r10","r10d","r10w","r10b","r10b" },
+	{ "r11", "r11d","r11w","r11b","r11b" },
+	{ "r12", "r12d","r12w","r12b","r12b" },
+	{ "r13", "r13d","r13w","r13b","r13b" },
+	{ "r14", "r14d","r14w","r14b","r14b" },
+	{ "r15", "r15d","r15w","r15b","r15b" }
+};
+
 struct list * reg_init (struct list *l)
 {
 	int i;
@@ -56,6 +76,57 @@ char * newreg()
 	}
 	printf ("no new regs\n");
 	return "unavail";
+}
+
+char * get_reg_name (char *r, int type)
+{
+	int i;
+	int map_size;
+	struct reg_map *found = NULL;
+	char *ret;
+
+	map_size = sizeof (all_map)/ sizeof (struct reg_map);
+
+	for (i=0; i<map_size; i++)
+	{
+		if (strcmp (r, all_map[i].r64) == 0)
+			found = &all_map[i];
+		if (strcmp (r, all_map[i].r32) == 0)
+			found = &all_map[i];
+		if (strcmp (r, all_map[i].r16) == 0)
+			found = &all_map[i];
+		if (strcmp (r, all_map[i].r8h) == 0)
+			found = &all_map[i];
+		if (strcmp (r, all_map[i].r8l) == 0)
+			found = &all_map[i];
+	}
+
+	if (found == NULL)
+		return "not found";
+
+	switch (type)
+	{
+		case R64:
+			ret = found->r64;
+			break;
+		case R32:
+			ret = found->r32;
+			break;
+		case R16:
+			ret = found->r16;
+			break;
+		case R8H:
+			ret = found->r8h;
+			break;
+		case R8L:
+			ret = found->r8l;
+			break;
+		default:
+			ret = "not found";
+			break;
+	}
+
+	return ret;
 }
 
 void freereg(char * reg)
