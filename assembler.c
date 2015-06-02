@@ -171,7 +171,6 @@ char *assembler_mul_id_id (struct treenode *tn)
         printf ("\timul %%%s, %%%s\n", r, l);
         
         return l;
-
 }
 char *assembler_mul_id_num (struct treenode *tn)
 {
@@ -185,7 +184,6 @@ char *assembler_mul_id_num (struct treenode *tn)
         printf ("\timul %%%s, %%%s\n", tn->right->reg, l);
         
         return l;
-
 }
 char *assembler_mul_num_id (struct treenode *tn)
 {
@@ -201,19 +199,37 @@ char *assembler_mul_num_id (struct treenode *tn)
         
         return r;
 }
+char *assembler_mul (struct treenode *tn)
+{
+        char *l = newreg ();
+        char *r = newreg ();
+
+        if (tn->left->op == NUM)
+        {
+                printf ("\tbt $0, %%%s\n", tn->left->reg);
+                printf ("\tjc raisesig\n");
+        }
+        if (tn->right->op == NUM)
+        {
+                printf ("\tbt $0, %%%s\n", tn->right->reg);
+                printf ("\tjc raisesig\n");
+        }
+
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", l);
+        printf ("\tshr $1, %%%s\n", r);
+ 
+        printf ("\timul %%%s, %%%s\n", r, l);
+        
+        return l;
+}
 char *assembler_mul_num_num (struct treenode *tn)
 {
         printf ("MUL (rc, rc)\n");
         return newreg();
 
 }
-char *assembler_mul (struct treenode *tn)
-{
-        printf ("MUL (term, term)\n");
-        return newreg();
-
-}
-
 char *assembler_and_id_id (struct treenode *tn)
 {
         char *l = newreg ();
@@ -338,32 +354,71 @@ char *assembler_less (struct treenode *tn)
 
 char *assembler_eq_id_id (struct treenode *tn)
 {
-        printf ("EQ (reg, reg)\n");
-        return newreg();
+
+        char *reg = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
+        printf ("\tjnz noteq\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("noteq:\n");
+        printf ("NOT FINISHED\n");
+        return reg;
 
 }
 char *assembler_eq_id_num (struct treenode *tn)
 {
-        printf ("EQ (reg, rc)\n");
-        return newreg();
+ 
+        char *reg = newreg ();
+        char *l = newreg ();
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
+        printf ("\tshr $1, %%%s\n", l);
+        
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tcmp %%%s, %%%s\n", l, tn->right->reg);
+        printf ("\tjnz noteq\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("noteq:\n");
+        return reg;
 
 }
 char *assembler_eq_num_id (struct treenode *tn)
 {
-        printf ("EQ (rc, reg)\n");
-        return newreg();
+ 
+        char *reg = newreg ();
+        char *r = newreg ();
+        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
+        printf ("\tshr $1, %%%s\n", r);
+        
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, r);
+        printf ("\tjnz noteq\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("noteq:\n");
+        return reg;
+
 
 }
 char *assembler_eq_num_num (struct treenode *tn)
 {
-        printf ("EQ (rc, rc)\n");
-        return newreg();
+  
+        char *reg = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
+        printf ("\tjnz noteq\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("noteq:\n");
+        return reg;
 
 }
 char *assembler_eq (struct treenode *tn)
 {
-        printf ("EQ (term, term)\n");
-        return newreg();
+        char *reg = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
+        printf ("\tjnz noteq\n");
+        printf ("\tmovq $1, %%%s\n", reg);
+        printf ("noteq:\n");
+        return reg;
 
 }
 
@@ -378,12 +433,16 @@ char *assembler_not (struct treenode *tn)
 char *assembler_head (struct treenode *tn)
 {
         char *reg = newreg ();
+        char *l = newreg ();
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjnc raisesig\n");
-
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq $1, %%%s\n", reg);
-        
+ 
+        printf ("\tmovq %%%s, %%%s\n", reg, l);
+        printf ("\tshr $1, %%%s\n", l);
+
+       
         return reg;
 
 }
