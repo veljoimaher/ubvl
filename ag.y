@@ -77,7 +77,6 @@ Lambda          : t_fun ident t_assign Expr t_end
                                 @codegen list_dump (@Expr.variable@);
                                 */
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, reg_init(@Expr.variable@)), @Expr.tn@);
-				@codegen tree_dump (@Expr.tn@);
                         @}
                 ;
 Expr            : t_if Expr t_then Expr t_else Expr t_end
