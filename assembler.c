@@ -365,17 +365,20 @@ char *assembler_and (struct treenode *tn)
 
 char *assembler_dot_id_id (struct treenode *tn)
 {
-        return newreg();
+        printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
+        return tn->right->reg;
 
 }
 char *assembler_dot_id_num (struct treenode *tn)
 {
-        return newreg();
+        printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
+        return tn->right->reg;
 
 }
 char *assembler_dot_num_id (struct treenode *tn)
 {
-        return newreg();
+        printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
+        return tn->right->reg;
 }
 char *assembler_dot_num_num (struct treenode *tn)
 {
@@ -384,7 +387,8 @@ char *assembler_dot_num_num (struct treenode *tn)
 }
 char *assembler_dot (struct treenode *tn)
 {
-        return newreg();
+        printf ("\tmovq, (%%%s), 8(%%%s)\n", tn->left->reg, tn->right->reg);
+        return tn->right->reg;
 
 }
 
@@ -433,7 +437,7 @@ char *assembler_less (struct treenode *tn)
 char *assembler_eq_id_id (struct treenode *tn)
 {
 
-        char *reg = newreg ();
+        char *reg = get_reg_name (newreg(), R8L);
         printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
         printf ("\tsetc %%%s\n", reg);
         printf ("\tshl $1, %%%s\n", reg);
@@ -443,13 +447,16 @@ char *assembler_eq_id_id (struct treenode *tn)
 char *assembler_eq_id_num (struct treenode *tn)
 {
  
-        char *reg = newreg ();
+        char *reg = newreg();
+        char *reg8;
         char *l = newreg ();
+        printf ("\txor %%%s, %%%s\n", reg, reg);
+        reg8 = get_reg_name (reg, R8L);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
         
         printf ("\tcmp %%%s, %%%s\n", l, tn->right->reg);
-        printf ("\tsetc %%%s\n", reg);
+        printf ("\tsetz %%%s\n", reg8);
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -457,7 +464,7 @@ char *assembler_eq_id_num (struct treenode *tn)
 char *assembler_eq_num_id (struct treenode *tn)
 {
  
-        char *reg = newreg ();
+        char *reg = get_reg_name (newreg(), R8L);
         char *r = newreg ();
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
@@ -479,7 +486,7 @@ char *assembler_eq_num_num (struct treenode *tn)
 }
 char *assembler_eq (struct treenode *tn)
 {
-        char *reg = newreg ();
+        char *reg = get_reg_name (newreg(), R8L);
         printf ("\tcmp %%%s, %%%s\n", tn->left->reg, tn->right->reg);
         printf ("\tsetc %%%s\n", reg);
         return reg;
