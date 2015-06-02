@@ -42,3 +42,6 @@ assembler.o: assembler.c assembler.h
 
 clean:
 	rm -f ag codea.c codea *.o oxout.* lex.yy.c y.tab.* *~
+
+upload:
+	scp -r *.c *.h Makefile *.y *.flex *.bfe complang:./abgabe/codea/
