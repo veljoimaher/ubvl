@@ -384,11 +384,12 @@ char *assembler_dot_num_id (struct treenode *tn)
         */
         char *reg = newreg ();
         printf ("\tshl $1, %%%s\n", tn->left->reg);
-        printf ("\tmov %%%s, 0(%r15)\n", tn->left->reg);
-        printf ("\tmov %%%s, 8(%r15)\n", tn->right->reg);
-        printf ("\tmov %r15, %%%s\n", reg);
+        printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
+        printf ("\tmov %%%s, 8(%%r15)\n", tn->right->reg);
+        printf ("\tmov %%r15, %%%s\n", reg);
         printf ("\tadd $1, %%%s\n", reg);
-        printf ("\tadd $16, %r15\n");
+        printf ("\tadd $16, %%r15\n");
+	freereg (tn->left->reg);
         return reg;
 }
 char *assembler_dot_num_num (struct treenode *tn)
@@ -401,11 +402,11 @@ char *assembler_dot (struct treenode *tn)
         char *reg = newreg ();
 	/*printf ("term.term\n");
         */
-        printf ("\tmov %%%s, 0(%r15)\n", tn->left->reg);
-        printf ("\tmov %%%s, 8(%r15)\n", tn->right->reg);
-        printf ("\tmov %r15, %%%s\n", reg);
+        printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
+        printf ("\tmov %%%s, 8(%%r15)\n", tn->right->reg);
+        printf ("\tmov %%r15, %%%s\n", reg);
         printf ("\tadd $1, %%%s\n", reg);
-        printf ("\tadd $16, %r15\n");
+        printf ("\tadd $16, %%r15\n");
         return reg;
 
 }
