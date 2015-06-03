@@ -416,6 +416,10 @@ char *assembler_dot_num_num (struct treenode *tn)
 char *assembler_dot (struct treenode *tn)
 {
         char *reg = newreg ();
+        if (tn->left->op == NUM)
+                printf ("\tshl $1, %%%s\n", tn->left->reg);
+        if (tn->right->op == NUM)
+                printf ("\tshl $1, %%%s\n", tn->right->reg);
         printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
         printf ("\tmov %%%s, 8(%%r15)\n", tn->right->reg);
         printf ("\tmov %%r15, %%%s\n", reg);
