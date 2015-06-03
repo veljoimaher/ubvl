@@ -367,8 +367,8 @@ char *assembler_and (struct treenode *tn)
 char *assembler_dot_id_id (struct treenode *tn)
 {
 	char *reg = newreg ();
-        printf ("\tmov %%%s, 0(%r15)\n", tn->left->reg);
-        printf ("\tmov %%%s, 8(%r15)\n", tn->right->reg);
+        printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
+        printf ("\tmov %%%s, 8(%%r15)\n", tn->right->reg);
         printf ("\tmov %%r15, %%%s\n", reg);
         printf ("\tadd $1, %%%s\n", reg);
         printf ("\tadd $16, %%r15\n");
@@ -379,8 +379,8 @@ char *assembler_dot_id_num (struct treenode *tn)
 {
         char *reg = newreg ();
         printf ("\tshl $1, %%%s\n", tn->right->reg);
-        printf ("\tmov %%%s, 0(%r15)\n", tn->left->reg);
-        printf ("\tmov %%%s, 8(%r15)\n", tn->right->reg);
+        printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
+        printf ("\tmov %%%s, 8(%%r15)\n", tn->right->reg);
         printf ("\tmov %%r15, %%%s\n", reg);
         printf ("\tadd $1, %%%s\n", reg);
         printf ("\tadd $16, %%r15\n");
@@ -427,7 +427,7 @@ char *assembler_dot (struct treenode *tn)
 
 char *assembler_less_id_id (struct treenode *tn)
 {
-        char *reg = newreg();
+        /* char *reg = newreg(); */
         char *l = newreg ();
         char *r = newreg ();
   
