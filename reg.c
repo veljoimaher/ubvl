@@ -44,7 +44,6 @@ struct reg_map all_map[] =
 
 struct list * reg_init (struct list *l)
 {
-	int i;
 	int nr_params = 0;
 	struct list *lp = l;
 	struct node *n = list_head (lp);
