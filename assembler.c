@@ -380,8 +380,6 @@ char *assembler_dot_id_num (struct treenode *tn)
 }
 char *assembler_dot_num_id (struct treenode *tn)
 {
-	/*printf ("num.id\n");
-        */
         char *reg = newreg ();
         printf ("\tshl $1, %%%s\n", tn->left->reg);
         printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
@@ -400,8 +398,6 @@ char *assembler_dot_num_num (struct treenode *tn)
 char *assembler_dot (struct treenode *tn)
 {
         char *reg = newreg ();
-	/*printf ("term.term\n");
-        */
         printf ("\tmov %%%s, 0(%%r15)\n", tn->left->reg);
         printf ("\tmov %%%s, 8(%%r15)\n", tn->right->reg);
         printf ("\tmov %%r15, %%%s\n", reg);
