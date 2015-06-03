@@ -383,7 +383,7 @@ char *assembler_dot_num_id (struct treenode *tn)
 	/*printf ("num.id\n");
         */
         char *reg = newreg ();
-        printf ("\tshr $1, %%%s\n", tn->left->reg);
+        printf ("\tshl $1, %%%s\n", tn->left->reg);
         printf ("\tmov %%%s, 0(%r15)\n", tn->left->reg);
         printf ("\tmov %%%s, 8(%r15)\n", tn->right->reg);
         printf ("\tmov %r15, %%%s\n", reg);
