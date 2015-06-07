@@ -4,6 +4,7 @@
 #include "node.h"
 
 #define NR_REGS 9
+#define NR_LABELS 6
 
 #define PARAM 0
 #define TEMP  1
@@ -30,12 +31,19 @@ struct reg_map
 	char *r8l;
 };
 
+struct label_map
+{
+        char *name;
+        char used;
+};
+
 struct list * reg_init (struct list *l);
 char * newreg();
 char * get_reg_name (char *r, int type);
 void freereg(char * reg);
 void freeallreg ();
 void reg_dump ();
+char *get_label ();
 
 #endif
 

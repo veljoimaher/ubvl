@@ -57,4 +57,11 @@ char *assembler_isnum (struct treenode *lc);
 char *assembler_islist (struct treenode *lc);
 char *assembler_isfun (struct treenode *lc);
 
+char *assembler_if (struct treenode *lc);
+char *assembler_then (struct treenode *lc);
+char *assembler_else (struct treenode *lc);
+char *assembler_let (struct treenode *lc);
+
+void assembler_orphan (struct treenode *tn);
+
 #endif

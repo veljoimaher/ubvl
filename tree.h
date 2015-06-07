@@ -5,7 +5,7 @@
 
 enum {
         NOT=1, HEAD, TAIL, ISNUM, ISLIST, ISFUN, ADD, SUB, MUL, AND, LESS, EQ, IDENT, NUM, ASGN,
-        LASGN, THEN, ELSE, IF, LET, DOT
+        LASGN, THEN, ELSE, IF, LET, DOT, ORPHAN
 };
 
 #ifndef BURM
@@ -21,6 +21,7 @@ struct treenode {
         char *reg;
         char *name;
         int val;
+        char *label;
 
 };
 typedef struct treenode treenode_ptr;

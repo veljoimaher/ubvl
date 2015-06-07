@@ -6,6 +6,9 @@
 #include "tree.h"
 #include "reg.h"
 
+char *lb = "LABEL";
+char *lb1 = "LABEL";
+
 void func_header (char *fname)
 {
         printf ("\t.text\n");
@@ -16,7 +19,7 @@ void func_header (char *fname)
 
 char *assembler_asgn (struct treenode *tn)
 {
-        char *r = tn->left->reg;
+        char *r; 
 
         r = tn->left->reg;
         printf("\tmov %%%s, %%rax\n", tn->right->reg);
@@ -670,4 +673,47 @@ char *assembler_isfun (struct treenode *tn)
         printf ("\tshl $1, %%%s\n", l);
         return l;
 
+}
+
+char *assembler_if (struct treenode *tn)
+{
+        /*if (tn->left)
+                printf ("left: %s\n", tn->left->reg);
+        if (tn->right)
+                printf ("right: %s\n", tn->right->reg);
+        printf ("- if - \n");
+        */
+        lb = get_label ();
+        printf ("\tcmp $1, %%%s\n", tn->left->reg);
+        printf ("\tjmp %s\n", lb);
+        
+        return tn->reg;
+}
+char *assembler_then (struct treenode *tn)
+{
+        printf ("%s:\n", lb);
+        return tn->reg;
+}
+char *assembler_else (struct treenode *tn)
+{
+        lb1 = get_label (); 
+        printf ("\tjmp %s\n", lb1);
+        /*if (tn->left)
+                printf ("left: %s\n", tn->left->reg);
+        if (tn->right)
+                printf ("right: %s\n", tn->right->reg);
+                */
+        
+        return tn->left->reg;
+}
+void assembler_orphan (struct treenode *tn)
+{
+        printf ("\tjmp %s\n", tn->left->name); 
+        printf ("%s:\n", lb1);
+}
+
+char *assembler_let (struct treenode *tn)
+{
+        printf ("asm LET\n");
+        return newreg ();
 }

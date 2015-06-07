@@ -42,6 +42,17 @@ struct reg_map all_map[] =
 	{ "r15", "r15d","r15w","r15b","r15b" }
 };
 
+/* labels definition */
+struct label_map label[] =
+{
+        {"LBL0", 0},
+        {"LBL1", 0},
+        {"LBL2", 0},
+        {"LBL3", 0},
+        {"LBL4", 0},
+        {"LBL5", 0},
+};
+
 struct list * reg_init (struct list *l)
 {
 	int nr_params = 0;
@@ -59,6 +70,22 @@ struct list * reg_init (struct list *l)
 		}
 	}
 	return l;
+}
+
+char *get_label ()
+{
+        int i;
+
+        for (i=0; i<NR_LABELS; i++)
+        {
+                if (label[i].used == 0)
+                {
+                        label[i].used = 1;
+                        return label[i].name;
+                }
+        }
+        printf ("no new labels\n");
+        return "label unavailable";
 }
 
 char * newreg()

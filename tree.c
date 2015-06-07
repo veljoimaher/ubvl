@@ -24,6 +24,7 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
         tree->reg = 0;
         tree->val = 0;
         tree->name = "n/a";
+        tree->label = "n/a";
 
         /* treenode_dump (tree); */
         return tree;
