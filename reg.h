@@ -2,6 +2,7 @@
 #define __REG_H__
 
 #include "node.h"
+#include "tree.h"
 
 #define NR_REGS 9
 #define NR_LABELS 6
@@ -44,6 +45,7 @@ void freereg(char * reg);
 void freeallreg ();
 void reg_dump ();
 char *get_label ();
+void reg_assign (struct treenode *tn, char *reg);
 
 #endif
 

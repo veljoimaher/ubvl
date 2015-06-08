@@ -4,7 +4,7 @@ CFLAGS=-Wall
 all: codea
 
 codea: lex.yy.o y.tab.o node.o tree.o reg.o assembler.o
-	gcc -o codea node.o tree.o lex.yy.o y.tab.o reg.o assembler.o codea.o -lfl
+	gcc -o codeb node.o tree.o lex.yy.o y.tab.o reg.o assembler.o codea.o -lfl
 
 tree.o: tree.c tree.h codea.o
 	gcc -c -ansi -pedantic -Wall tree.c -D_GNU_SOURCE
@@ -41,7 +41,7 @@ assembler.o: assembler.c assembler.h
 	gcc -c -ansi -pedantic -Wall assembler.c 
 
 clean:
-	rm -f ag codea.c codea *.o oxout.* lex.yy.c y.tab.* *~
+	rm -f ag codea.c codeb *.o oxout.* lex.yy.c y.tab.* *~
 
 upload:
-	scp -r *.c *.h Makefile *.y *.flex *.bfe complang:./abgabe/codea/
+	scp -r *.c *.h Makefile *.y *.flex *.bfe complang:./abgabe/codeb/

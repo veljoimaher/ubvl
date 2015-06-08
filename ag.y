@@ -23,7 +23,6 @@ main()
 }
 
 int cnt = 0;
-char *lbl = "LABEL";
 %}
 %token t_end t_isnum t_let t_fun t_not t_if t_else ident t_assign t_in t_tail t_equals t_and t_head num t_isfun t_islist t_then
 
@@ -37,15 +36,16 @@ char *lbl = "LABEL";
 @autoinh variable
 @autosyn let tn
 @attributes { char *name; } ident
-@attributes { struct list *variable; struct list *let; struct treenode *tn; } LetExpr 
+@attributes { struct list *variable; struct list *let; struct treenode *tn; struct treenode *tnp; struct treenode *tnp1; struct treenode *var; } LetExpr 
 @attributes { struct list *variable; struct treenode *tn; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
 @attributes { struct list *idef; struct list *sdef; struct treenode *tn; } Def Lambda
 @attributes { struct list *idef; } Program
 @attributes { int val; } num
 
 @traversal @preorder err
+@traversal @postorder codegen1
 @traversal @postorder codegen
-@traversal @postorder codegenif
+@traversal @preorder codegenpre
 
 %%
 StartProgram	: Program
@@ -75,9 +75,6 @@ Lambda          : t_fun ident t_assign Expr t_end
                         @{
 				@i @Lambda.sdef@ = list_create (); 
                                 @i @Expr.variable@ = insert_elem (PARAMETER, @Lambda.idef@, @ident.name@, 1);
-				/*@codegen reg_init (@Expr.variable@);
-                                @codegen list_dump (@Expr.variable@);
-                                */
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, reg_init(@Expr.variable@)), @Expr.tn@);
                         @}
                 ;
@@ -91,12 +88,14 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @codegen (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                 @codegenif invoke_burm (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                 */
-                                @i @Expr.0.tn@ = new_op_node (ORPHAN, new_id_node (lbl = get_label (), list_create ()), (struct treenode *)NULL);
+                                @codegen printf ("IF THEN ELSE\n");
+                                @i @Expr.0.tn@ = new_op_node (ORPHAN, new_id_node (get_label (), list_create ()), (struct treenode *)NULL);
+                                @codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, @Expr.3.tn@)));
+                                /*@codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
                                 @codegen printf ("%s:\n", lbl);
-                                @codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
                                 @codegen invoke_burm (new_op_node (THEN, @Expr.2.tn@, (struct treenode *)NULL));
                                 @codegen invoke_burm (new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL));
-                                /*@codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, 
+                                *//*@codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, 
                                                                    new_op_node (THEN, @Expr.2.tn@, 
                                                                                        new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                                                                        */
@@ -108,7 +107,6 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @}
 		| LetExpr
                         @{
-                                @codegen printf ("LetExpr 0\n");
                         @}
                 | Ops
                         @{
@@ -160,11 +158,21 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
 
                                 /* @Expr.2.variable@ gets everything from before (@Expr.0.variable@) and a new element */
                                 @i @LetExpr.let@ = insert_elem (VARIABLE, list_create (), @ident.name@, 3);
-                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @LetExpr.variable@, @ident.name@, 4);
-                                /* !!! LetExpr treenode is incorrect. We will fix it for the next release !!! */
-                                @i @LetExpr.tn@ = new_op_node (LET, new_id_node (@ident.name@, @LetExpr.variable@), @Expr.0.tn@);
-                                @codegen printf ("LetExpr 1\n");
-                                @codegen invoke_burm(@LetExpr.tn@);
+                                @i @Expr.1.variable@ = insert_elem (VARIABLE, @Expr.variable@, @ident.name@, 4);
+
+                                @i @LetExpr.var@ = new_id_node (@ident.name@, @Expr.1.variable@);
+                                @i @LetExpr.tnp@ = new_op_node (LET, @LetExpr.var@, @Expr.0.tn@);
+                                @i @LetExpr.tnp1@ = new_op_node (IN, @LetExpr.var@, @Expr.1.tn@);
+                                @codegen printf ("LBL%s:\n", @ident.name@);        
+                                @i @LetExpr.tn@ = new_op_node (ORPHAN, new_id_node (@ident.name@, @Expr.1.variable@), (struct treenode *)NULL);
+                                @codegen
+                                {
+                                        invoke_burm (@LetExpr.tnp@);                                       
+                                }
+                                @codegen
+                                {
+                                        invoke_burm (@LetExpr.tnp1@);
+                                }
                         @}
                 ;
 

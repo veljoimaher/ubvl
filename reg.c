@@ -61,7 +61,7 @@ struct list * reg_init (struct list *l)
 
 	while ( (n = list_next (n)) != list_end (lp))
 	{
-		if (n->type == PARAMETER)
+		if (n->type == PARAMETER || n->type == VARIABLE)
 		{
 			all_regs[nr_params].type = PARAM;
 			all_regs[nr_params].used = 1;
@@ -86,6 +86,12 @@ char *get_label ()
         }
         printf ("no new labels\n");
         return "label unavailable";
+}
+
+
+void reg_assign (struct treenode *tn, char *reg)
+{
+        tn->reg = reg;
 }
 
 char * newreg()

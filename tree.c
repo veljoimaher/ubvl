@@ -21,7 +21,7 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
         tree->op = op;
         tree->left = left;
         tree->right = right;
-        tree->reg = 0;
+        tree->reg = "n/a";
         tree->val = 0;
         tree->name = "n/a";
         tree->label = "n/a";
@@ -33,8 +33,9 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
 struct treenode *new_id_node (char *id_name, struct list *ids)
 {
         struct treenode *tree = new_op_node (IDENT, (struct treenode *)NULL, (struct treenode *)NULL);
-        tree->reg = get_node_reg (id_name, ids);
         tree->name = id_name;
+        tree->reg = get_node_reg (tree->name, ids);
+
         
         /* treenode_dump (tree); */
         return tree;
@@ -53,13 +54,20 @@ struct treenode *new_num_node (long num)
 char *get_node_reg (char *id_name, struct list *ids)
 {
         struct node *n;
-        char *reg = "NULL";
+        char *reg = "NEMANISTA";
+
 
         n = list_head (ids);
         while ( (n = list_next (n)) != list_end (ids))
         {
-                if ((strcmp (n->name, id_name) == 0) && (n->type == PARAMETER))
+                if ( (strcmp (n->name, id_name) == 0) 
+                      && ( 
+                                (n->type == PARAMETER) || (n->type == VARIABLE) 
+                         )
+                   )
+                {
                         reg = n->reg;
+                }
         }
 
         return reg;

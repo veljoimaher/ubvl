@@ -61,7 +61,8 @@ char *assembler_if (struct treenode *lc);
 char *assembler_then (struct treenode *lc);
 char *assembler_else (struct treenode *lc);
 char *assembler_let (struct treenode *lc);
+char *assembler_in (struct treenode *tn);
 
-void assembler_orphan (struct treenode *tn);
+char *assembler_orphan (struct treenode *tn);
 
 #endif

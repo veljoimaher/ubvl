@@ -5,7 +5,7 @@
 
 enum {
         NOT=1, HEAD, TAIL, ISNUM, ISLIST, ISFUN, ADD, SUB, MUL, AND, LESS, EQ, IDENT, NUM, ASGN,
-        LASGN, THEN, ELSE, IF, LET, DOT, ORPHAN
+        LASGN, THEN, ELSE, IF, LET, DOT, ORPHAN, IN
 };
 
 #ifndef BURM

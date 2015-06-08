@@ -13,7 +13,7 @@
 %}
 
 %start stmt
-%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 LET=20 DOT=21 ORPHAN=22
+%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 LET=20 DOT=21 ORPHAN=22 IN=23
 
 
 %%
@@ -33,10 +33,11 @@ ops: TAIL(ops)                           # 1 # bnode->reg = assembler_tail (bnod
 ops: ISNUM(ops)                           # 1 # bnode->reg = assembler_isnum (bnode);
 ops: ISLIST(ops)                           # 1 # bnode->reg = assembler_islist (bnode);
 ops: ISFUN(ops)                           # 1 # bnode->reg = assembler_isfun (bnode);
-ops: IF(ops)                            # 1 # bnode->reg = assembler_if (bnode);
-ops: THEN(ops)                            # 1 # bnode->reg = assembler_then (bnode);
+ops: IF(ops, ops)                            # 1 # bnode->reg = assembler_if (bnode);
+ops: THEN(ops, ops)                            # 1 # bnode->reg = assembler_then (bnode);
 ops: ELSE(ops)                            # 1 # bnode->reg = assembler_else (bnode);
-ops: LET(ops)                            # 1 # bnode->reg = assembler_let (bnode);
+ops: LET(term, ops)                            # 1 # bnode->reg = assembler_let (bnode);
+ops: IN(term, ops)                            # 1 # bnode->reg = assembler_in (bnode);
 ops: term
 
 term: reg
@@ -51,7 +52,7 @@ term: SUB (reg, rc)			# 1 # bnode->reg = assembler_sub_id_num (bnode);
 term: SUB (rc, reg)			# 1 # bnode->reg = assembler_sub_num_id (bnode); 
 term: SUB (term, term)			# 3 # bnode->reg = assembler_sub (bnode); 
 
-term: MUL (reg, reg)			# 2 # bnode->reg = assembler_mul_id_id (bnode); 
+term: MUL (reg, reg)			# 2 # bnode->reg = assembler_mul_id_id (bnode);
 term: MUL (reg, rc)			# 1 # bnode->reg = assembler_mul_id_num (bnode); 
 term: MUL (rc, reg)			# 1 # bnode->reg = assembler_mul_num_id (bnode); 
 term: MUL (term, term)			# 3 # bnode->reg = assembler_mul (bnode); 
@@ -76,7 +77,7 @@ term: EQ (reg, rc)			# 1 # bnode->reg = assembler_eq_id_num (bnode);
 term: EQ (rc, reg)			# 1 # bnode->reg = assembler_eq_num_id (bnode); 
 term: EQ (term, term)			# 3 # bnode->reg = assembler_eq (bnode); 
 
-reg: ORPHAN                             # 0 # assembler_orphan (bnode);
+reg: ORPHAN                             # 0 # bnode->reg = assembler_orphan (bnode);
 
 rc: num                                 # 0 #
 
