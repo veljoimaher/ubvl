@@ -92,9 +92,13 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @i @Expr.0.tn@ = new_op_node (ORPHAN, @Expr.1.tn@, (struct treenode *)NULL);
                                 @codegen {
                                                 invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
-                                                @Expr.2.tn@->reg = @Expr.1.tn@->reg;
-                                                invoke_burm (new_op_node (THEN, @Expr.2.tn@, (struct treenode *)NULL));
-                                                invoke_burm (new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL));
+                                                @Expr.2.tn@ = new_op_node (THEN, @Expr.2.tn@, (struct treenode *)NULL);
+                                                reg_assign (@Expr.2.tn@, @Expr.1.tn@->reg);
+                                                invoke_burm (@Expr.2.tn@);
+                                                
+                                                @Expr.3.tn@ = new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL);
+                                                reg_assign (@Expr.3.tn@, @Expr.1.tn@->reg);
+                                                invoke_burm (@Expr.3.tn@);
                                 }
                                /* 
                                 @codegen {

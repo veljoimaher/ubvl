@@ -658,7 +658,7 @@ char *assembler_islist (struct treenode *tn)
         printf ("\tjnc notlist\n");
         printf ("\tmovq $1, %%%s\n", reg);
         
-        printf ("\tnotlist:\n");
+        printf ("notlist:\n");
         printf ("\tshl $1, %%%s\n", reg);
         return reg;
 
@@ -696,19 +696,19 @@ char *assembler_then (struct treenode *tn)
 {
         int label = lbl;
         printf ("\n");
-        /*if (tn->left)
+        /*
+        if (tn->left)
                 printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
         if (tn->right)
                 printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
-                */
-               
-               
+              */ 
         printf ("\tshl $1, %%%s\n", tn->left->reg);
-        printf ("\tmovq %%%s, %%rdi\n", tn->left->reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, tn->reg);
         printf ("\tjmp LBL%d\n", ++lbl);
         printf ("LBL%d:\n", label);
         return tn->left->reg;
 }
+
 char *assembler_else (struct treenode *tn)
 {
         printf ("\n");
@@ -719,7 +719,7 @@ char *assembler_else (struct treenode *tn)
                 */
                 
         printf ("\tshl $1, %%%s\n", tn->left->reg);
-        printf ("\tmovq %%%s, %%rdi\n", tn->left->reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, tn->reg);
         printf ("\tjmp LBL%d\n", lbl);
         return tn->left->reg;
 }

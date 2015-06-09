@@ -45,7 +45,7 @@ void freereg(char * reg);
 void freeallreg ();
 void reg_dump ();
 char *get_label ();
-void reg_assign (struct treenode *tn, char *reg);
+struct treenode *reg_assign (struct treenode *tn, char *reg);
 
 #endif
 
