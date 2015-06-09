@@ -6,6 +6,7 @@
 #include "tree.h"
 #include "reg.h"
 
+int lbl = 0;
 void func_header (char *fname)
 {
         printf ("\t.text\n");
@@ -674,37 +675,55 @@ char *assembler_isfun (struct treenode *tn)
 
 char *assembler_if (struct treenode *tn)
 {
-        printf ("IF\n");
-        if (tn->left)
-                printf ("left: %s\n", tn->left->reg);
+        char *reg = newreg ();
+        /*if (tn->left)
+                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
         if (tn->right)
-                printf ("right: %s\n", tn->right->reg);
-        printf ("- if - \n");
+                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
+        printf ("\tjnz LBL%d\n", lbl);
+                */
+
+        printf ("\n");
         
-        printf ("\tcmp $0, %%%s\n", tn->left->reg);
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
+        printf ("\tshr $1, %%%s\n", reg);
+        printf ("\tcmp $0, %%%s\n", reg);
+        printf ("\tjz LBL%d\n", lbl);
         
-        return tn->reg;
+        return reg;
 }
 char *assembler_then (struct treenode *tn)
 {
-        printf ("THEN\n");
-        if (tn->left)
-                printf ("left: %s\n", tn->left->reg);
+        int label = lbl;
+        printf ("\n");
+        /*if (tn->left)
+                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
         if (tn->right)
-                printf ("right: %s\n", tn->right->reg);
+                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
+                */
+               
+               
+        printf ("\tshl $1, %%%s\n", tn->left->reg);
+        printf ("\tmovq %%%s, %%rdi\n", tn->left->reg);
+        printf ("\tjmp LBL%d\n", ++lbl);
+        printf ("LBL%d:\n", label);
         return tn->left->reg;
 }
 char *assembler_else (struct treenode *tn)
 {
-        printf ("ELSE\n");
-        if (tn->left)
-                printf ("left: %s\n", tn->left->reg);
+        printf ("\n");
+        /*if (tn->left)
+                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
         if (tn->right)
-                printf ("right: %s\n", tn->right->reg);
+                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
+                */
+                
+        printf ("\tshl $1, %%%s\n", tn->left->reg);
+        printf ("\tmovq %%%s, %%rdi\n", tn->left->reg);
+        printf ("\tjmp LBL%d\n", lbl);
         return tn->left->reg;
 }
 
-int lbl = 0;
 char *assembler_orphan (struct treenode *tn)
 {
         /*printf ("ORPHAN\n"); 
@@ -761,8 +780,8 @@ char *assembler_fcall (struct treenode *tn)
         printf ("\n");
         printf ("\tmovq %%%s, %%rdi\n", tn->right->reg); 
         printf ("\tjmp %s\n", tn->left->name);
-        printf ("\tmovq %%rax, %%%s\n", tn->right->reg); 
-
+        /*printf ("\tmovq %%rax, %%%s\n", tn->right->reg); 
+        */
         return tn->right->reg;
 
 }

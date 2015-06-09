@@ -45,12 +45,12 @@ struct reg_map all_map[] =
 /* labels definition */
 struct label_map label[] =
 {
-        {"LBL0", 0},
-        {"LBL1", 0},
-        {"LBL2", 0},
-        {"LBL3", 0},
-        {"LBL4", 0},
-        {"LBL5", 0},
+        {"_IF_0", 0},
+        {"_IF_1", 0},
+        {"_IF_2", 0},
+        {"_IF_3", 0},
+        {"_IF_4", 0},
+        {"_IF_5", 0},
 };
 
 struct list * reg_init (struct list *l)
