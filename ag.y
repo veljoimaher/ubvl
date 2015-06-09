@@ -147,7 +147,7 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                         @{
                                 /* simply pass on what we already have */
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
-                                @i @Expr.0.tn@ = @Expr.1.tn@; 
+                                @i @Expr.0.tn@ = new_op_node (FCALL, @Expr.1.tn@, @Term.tn@); 
                         @}
                 ;
 

@@ -13,7 +13,7 @@
 %}
 
 %start stmt
-%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 LET=20 DOT=21 ORPHAN=22 IN=23
+%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 LET=20 DOT=21 ORPHAN=22 IN=23 FCALL=24
 
 
 %%
@@ -38,6 +38,7 @@ ops: THEN(ops, ops)                            # 1 # bnode->reg = assembler_then
 ops: ELSE(ops)                            # 1 # bnode->reg = assembler_else (bnode);
 ops: LET(term, ops)                            # 1 # bnode->reg = assembler_let (bnode);
 ops: IN(term, ops)                            # 1 # bnode->reg = assembler_in (bnode);
+ops: FCALL(term, term)                            # 1 # bnode->reg = assembler_fcall (bnode);
 ops: term
 
 term: reg

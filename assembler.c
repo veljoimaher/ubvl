@@ -712,8 +712,8 @@ char *assembler_orphan (struct treenode *tn)
                 printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
         if (tn->right)
                 printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
-        
         */
+
         printf ("\tjmp LBL%s\n", tn->left->name); 
         printf ("LBL%d:\n", lbl++); 
         return tn->left->reg;
@@ -727,6 +727,7 @@ char *assembler_let (struct treenode *tn)
         if (tn->right)
                 printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
         */
+
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         printf ("\n");
         return tn->left->reg;
@@ -741,8 +742,27 @@ char *assembler_in (struct treenode *tn)
                 printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
 
         */
+
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
         printf ("\n");
         printf ("\tjmp LBL%d\n", lbl);
         return tn->left->reg;
+}
+
+char *assembler_fcall (struct treenode *tn)
+{
+        /*if (tn->left)
+                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
+        if (tn->right)
+                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
+                */
+        
+
+        printf ("\n");
+        printf ("\tmovq %%%s, %%rdi\n", tn->right->reg); 
+        printf ("\tjmp %s\n", tn->left->name);
+        printf ("\tmovq %%rax, %%%s\n", tn->right->reg); 
+
+        return tn->right->reg;
+
 }

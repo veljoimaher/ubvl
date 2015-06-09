@@ -63,6 +63,8 @@ char *assembler_else (struct treenode *lc);
 char *assembler_let (struct treenode *lc);
 char *assembler_in (struct treenode *tn);
 
+char *assembler_fcall (struct treenode *tn);
+
 char *assembler_orphan (struct treenode *tn);
 
 #endif
