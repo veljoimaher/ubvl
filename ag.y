@@ -84,10 +84,13 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
                                 @i @Expr.2.variable@ = @Expr.0.variable@;
                                 @i @Expr.3.variable@ = @Expr.0.variable@;
+				@i @Expr.0.tn@ = new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, @Expr.3.tn@));
+
                                 /* !!! Expr.0 treenode is incorrect. We will fix it for the next release !!! 
                                 @codegen (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                 @codegenif invoke_burm (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                 */
+				/*
                                 @codegen printf ("LBL%s:\n", (@Expr.1.tn@->name = get_label ()));
                                 @i @Expr.0.tn@ = new_op_node (ORPHAN, @Expr.1.tn@, (struct treenode *)NULL);
                                 @codegen {
@@ -100,6 +103,7 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                                 reg_assign (@Expr.3.tn@, @Expr.1.tn@->reg);
                                                 invoke_burm (@Expr.3.tn@);
                                 }
+*/
                                /* 
                                 @codegen {
                                                 invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
@@ -277,6 +281,7 @@ MulTerm         :
                 ;
 Term            : '(' Expr ')'
                 @{
+				@i @Term.tn@ = @Expr.tn@;
                 @}
                 | num
                 @{
