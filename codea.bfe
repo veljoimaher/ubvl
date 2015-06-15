@@ -24,8 +24,8 @@ stmt: ASGN (reg, lambda)                # 4 # bnode->reg = assembler_asgn (bnode
 lambda: LASGN (reg, expr)               # 1 # bnode->reg = assembler_lasgn_reg_expr (bnode);
 lambda: LASGN (reg, reg)		# 2 # bnode->reg = assembler_lasgn_reg_reg (bnode); 
 
-expr: ops
-expr: term 
+expr: ops				# 0 #
+expr: term				# 0 #
 
 ops: NOT(ops)                           # 1 # bnode->reg = assembler_not (bnode);
 ops: HEAD(ops)                           # 1 # bnode->reg = assembler_head (bnode);
@@ -33,16 +33,17 @@ ops: TAIL(ops)                           # 1 # bnode->reg = assembler_tail (bnod
 ops: ISNUM(ops)                           # 1 # bnode->reg = assembler_isnum (bnode);
 ops: ISLIST(ops)                           # 1 # bnode->reg = assembler_islist (bnode);
 ops: ISFUN(ops)                           # 1 # bnode->reg = assembler_isfun (bnode);
-ops: IF(ops)                            # 1 # bnode->reg = assembler_if (bnode);
-ops: THEN(ops)                            # 1 # bnode->reg = assembler_then (bnode);
-ops: ELSE(ops)                            # 1 # bnode->reg = assembler_else (bnode);
 ops: LET(term, ops)                            # 1 # bnode->reg = assembler_let (bnode);
 ops: IN(term, ops)                            # 1 # bnode->reg = assembler_in (bnode);
 ops: FCALL(term, term)                            # 1 # bnode->reg = assembler_fcall (bnode);
 ops: term
 
-term: reg
-term: rc
+term: reg				# 0 #
+term: rc				# 0 #
+
+term: IF(ops, term)		# 1 # bnode->reg = assembler_if (bnode); 
+term: THEN (term, term)			# 3 # printf ("THEN ELSE\n");
+
 term: ADD (reg, reg)			# 2 # bnode->reg = assembler_add_id_id (bnode); 
 term: ADD (reg, rc)			# 1 # bnode->reg = assembler_add_id_num (bnode); 
 term: ADD (rc, reg)			# 1 # bnode->reg = assembler_add_num_id (bnode); 
@@ -82,7 +83,7 @@ reg: ORPHAN                             # 0 # bnode->reg = assembler_orphan (bno
 
 rc: num                                 # 0 #
 
-reg: IDENT                              # 0 #
+reg: IDENT                              # 0 # 
 num: NUM                                # 0 # bnode->reg = newreg (); printf("\tmovq $%i, %%%s\n", bnode->val, bnode->reg);
 
 %%
