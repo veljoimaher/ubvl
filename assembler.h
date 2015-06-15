@@ -4,6 +4,8 @@
 #include "tree.h"
 
 void func_header (char *fname);
+void assembler_emit_signal (struct treenode *tn);
+
 char *assembler_asgn (struct treenode *tn);
 char *assembler_lasgn_reg_expr (struct treenode *tn);
 char * assembler_lasgn_reg_reg (struct treenode *tn);

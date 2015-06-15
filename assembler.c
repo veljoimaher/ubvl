@@ -15,6 +15,23 @@ void func_header (char *fname)
         printf ("%s:\n", fname);
 }
 
+void assembler_emit_signal (struct treenode *tn)
+{
+	if (reg_is_param (tn->left->reg) && reg_get_signal (tn->left->reg) == 0)
+	{
+		reg_set_signal (tn->left->reg);
+		printf ("\tbt $0, %%%s\n", tn->left->reg);
+		printf ("\tjc raisesig\n");
+	}
+
+	if (reg_is_param (tn->right->reg) && reg_get_signal (tn->right->reg) == 0)
+	{
+		reg_set_signal (tn->right->reg);
+                printf ("\tbt $0, %%%s\n", tn->right->reg);
+	        printf ("\tjc raisesig\n");
+	}
+}
+
 char *assembler_asgn (struct treenode *tn)
 {
         char *r; 
@@ -30,6 +47,7 @@ char *assembler_lasgn_reg_expr (struct treenode *tn)
 {
         if (tn->right->op == NUM)
                 printf ("\tshl $1, %%%s\n", tn->right->reg);
+
         return tn->right->reg;
 }
 char *assembler_lasgn_reg_reg (struct treenode *tn)
@@ -46,12 +64,13 @@ char *assembler_add_id_id (struct treenode *tn)
 {
         char *l = newreg();
         char *r = newreg();
-
+/*
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
- 
+*/
+	assembler_emit_signal (tn);
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmov %%%s, %%%s\n", tn->right->reg, r);
 
@@ -66,9 +85,11 @@ char *assembler_add_id_id (struct treenode *tn)
 char *assembler_add_id_num (struct treenode *tn)
 {
         char *l = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
- 
+*/
+	assembler_emit_signal (tn);	
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
         printf ("\taddq %%%s, %%%s\n", l, tn->right->reg);
@@ -80,10 +101,11 @@ char *assembler_add_id_num (struct treenode *tn)
 char *assembler_add_num_id (struct treenode *tn)
 {
         char *r = newreg ();
- 
+/* 
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmov %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
         printf ("\taddq %%%s, %%%s\n", r, tn->left->reg);
@@ -102,7 +124,7 @@ char *assembler_add (struct treenode *tn)
 {
         char *l = newreg();
         char *r = newreg();
-
+/*
         if (tn->left->op == NUM)
         {
                 printf ("\tbt $0, %%%s\n", tn->left->reg);
@@ -113,7 +135,8 @@ char *assembler_add (struct treenode *tn)
                 printf ("\tbt $0, %%%s\n", tn->right->reg);
                 printf ("\tjc raisesig\n");
         }
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmov %%%s, %%%s\n", tn->right->reg, r);
 
@@ -130,7 +153,8 @@ char *assembler_sub_id_id (struct treenode *tn)
 {
         char *l = newreg ();
         char *r = newreg ();
-        if (tn->left->op == NUM)
+/*
+	if (tn->left->op == NUM)
         {
                 printf ("\tbt $0, %%%s\n", tn->left->reg);
                 printf ("\tjc raisesig\n");
@@ -140,7 +164,8 @@ char *assembler_sub_id_id (struct treenode *tn)
                 printf ("\tbt $0, %%%s\n", tn->right->reg);
                 printf ("\tjc raisesig\n");
         }
-        
+*/        
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -153,9 +178,12 @@ char *assembler_sub_id_id (struct treenode *tn)
 char *assembler_sub_id_num (struct treenode *tn)
 {
         char *reg = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
-        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
+*/
+	assembler_emit_signal (tn);
+	printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tshr $1, %%%s\n", reg);
         printf ("\tsubq %%%s, %%%s\n", tn->right->reg, reg);
         
@@ -165,9 +193,11 @@ char *assembler_sub_id_num (struct treenode *tn)
 char *assembler_sub_num_id (struct treenode *tn)
 {
         char *r = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->right->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
- 
+*/ 
+	assembler_emit_signal (tn);
         printf ("\tmov %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
         printf ("\tsubq %%%s, %%%s\n", r, tn->left->reg); 
@@ -186,7 +216,8 @@ char *assembler_sub (struct treenode *tn)
 {
         char *l = newreg ();
         char *r = newreg ();
-        if (tn->left->op == NUM)
+/*
+	if (tn->left->op == NUM)
         {
                 printf ("\tbt $0, %%%s\n", tn->left->reg);
                 printf ("\tjc raisesig\n");
@@ -196,7 +227,8 @@ char *assembler_sub (struct treenode *tn)
                 printf ("\tbt $0, %%%s\n", tn->right->reg);
                 printf ("\tjc raisesig\n");
         }
-        
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -212,12 +244,13 @@ char *assembler_mul_id_id (struct treenode *tn)
 {
         char *l = newreg ();
         char *r = newreg ();
-
+/*
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -231,9 +264,11 @@ char *assembler_mul_id_id (struct treenode *tn)
 char *assembler_mul_id_num (struct treenode *tn)
 {
         char *l = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
  
@@ -245,10 +280,11 @@ char *assembler_mul_id_num (struct treenode *tn)
 char *assembler_mul_num_id (struct treenode *tn)
 {
         char *r = newreg ();
-
+/*
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
 
@@ -262,6 +298,7 @@ char *assembler_mul (struct treenode *tn)
         char *l = newreg ();
         char *r = newreg ();
 
+/*	
         if (tn->left->op == NUM)
         {
                 printf ("\tbt $0, %%%s\n", tn->left->reg);
@@ -272,7 +309,8 @@ char *assembler_mul (struct treenode *tn)
                 printf ("\tbt $0, %%%s\n", tn->right->reg);
                 printf ("\tjc raisesig\n");
         }
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -293,12 +331,13 @@ char *assembler_and_id_id (struct treenode *tn)
 {
         char *l = newreg ();
         char *r = newreg ();
-
+/*
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
- 
+*/ 
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -312,9 +351,11 @@ char *assembler_and_id_id (struct treenode *tn)
 char *assembler_and_id_num (struct treenode *tn)
 {
         char *l = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
-        
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tshr $1, %%%s\n", l);
         printf ("\tand %%%s, %%%s\n", tn->right->reg, l);
@@ -325,9 +366,11 @@ char *assembler_and_id_num (struct treenode *tn)
 char *assembler_and_num_id (struct treenode *tn)
 {
         char *r = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->right->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
- 
+*/ 
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", r);
  
@@ -348,12 +391,13 @@ char *assembler_and (struct treenode *tn)
 {
         char *l = newreg ();
         char *r = newreg ();
-
+/*
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
- 
+*/ 
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -435,12 +479,13 @@ char *assembler_less_id_id (struct treenode *tn)
         /* char *reg = newreg(); */
         char *l = newreg ();
         char *r = newreg ();
-  
+/*  
         printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
         printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -454,9 +499,11 @@ char *assembler_less_id_id (struct treenode *tn)
 char *assembler_less_id_num (struct treenode *tn)
 {
         char *reg = newreg();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
-        
+*/        
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tshr $1, %%%s\n", reg);
         
@@ -475,9 +522,11 @@ char *assembler_less_id_num (struct treenode *tn)
 char *assembler_less_num_id (struct treenode *tn)
 {
         char *reg = newreg();
-        printf ("\tbt $0, %%%s\n", tn->right->reg);
+/*
+	printf ("\tbt $0, %%%s\n", tn->right->reg);
         printf ("\tjc raisesig\n");
-        
+*/        
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, reg);
         printf ("\tshr $1, %%%s\n", reg);
         
@@ -505,7 +554,7 @@ char *assembler_less (struct treenode *tn)
         char *reg = newreg();
         char *l = newreg ();
         char *r = newreg ();
-  
+/*  
         if (tn->left->op == NUM)
         {
                 printf ("\tbt $0, %%%s\n", tn->left->reg);
@@ -516,7 +565,8 @@ char *assembler_less (struct treenode *tn)
                 printf ("\tbt $0, %%%s\n", tn->right->reg);
                 printf ("\tjc raisesig\n");
         }
-
+*/
+	assembler_emit_signal (tn);
         printf ("\tmovq %%%s, %%%s\n", tn->left->reg, l);
         printf ("\tmovq %%%s, %%%s\n", tn->right->reg, r);
         printf ("\tshr $1, %%%s\n", l);
@@ -600,9 +650,10 @@ char *assembler_eq (struct treenode *tn)
 
 char *assembler_not (struct treenode *tn)
 {
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjc raisesig\n");
-        printf ("\tbtc $1, %%%s\n", tn->left->reg);
+	printf ("\tbtc $1, %%%s\n", tn->left->reg);
 
         return tn->left->reg;
 }
@@ -617,7 +668,7 @@ char *assembler_not (struct treenode *tn)
 char *assembler_head (struct treenode *tn)
 {
         char *reg = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
+	printf ("\tbt $0, %%%s\n", tn->left->reg);
         printf ("\tjnc raisesig\n");
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq $1, %%%s\n", reg);
@@ -676,20 +727,15 @@ char *assembler_isfun (struct treenode *tn)
 char *assembler_if (struct treenode *tn)
 {
         char *reg = newreg ();
-        /*if (tn->left)
-                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
-        if (tn->right)
-                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
-        printf ("\tjnz LBL%d\n", lbl);
-                */
 
-        printf ("\n");
-        
-        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, reg);
-        printf ("\tshr $1, %%%s\n", reg);
-        printf ("\tcmp $0, %%%s\n", reg);
-        printf ("\tjz LBL%d\n", lbl);
-        
+	int lbl_start = get_label_nr();
+	int lbl_end = get_label_nr ();
+
+	assembler_emit_signal (tn);
+
+	printf ("heeey\n");
+
+
         return reg;
 }
 char *assembler_then (struct treenode *tn)
