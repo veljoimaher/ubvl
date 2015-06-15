@@ -20,6 +20,7 @@ struct reg
 {
         char *name;
         int used;
+	int signal;
         int type;
 };
 
@@ -41,11 +42,15 @@ struct label_map
 struct list * reg_init (struct list *l);
 char * newreg();
 char * get_reg_name (char *r, int type);
+int reg_is_param (char *reg);
 void freereg(char * reg);
 void freeallreg ();
 void reg_dump ();
 char *get_label ();
+int get_label_nr ();
 struct treenode *reg_assign (struct treenode *tn, char *reg);
+void reg_set_signal (char *reg);
+int reg_get_signal (char *reg);
 
 #endif
 

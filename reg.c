@@ -7,19 +7,20 @@ char *temp_regs[] = { "r11", "rbx", "rax" };
 
 int args_regs_used[6] = {0, 0, 0, 0, 0, 0};
 int temp_regs_used[3] = {0, 0, 0};
+int local_labels = 1;
 
 /* struct reg all_regs [9]; */
 struct reg all_regs[NR_REGS] =
 {
-	{"rdi", 0, PARAM},
-	{"rsi", 0, TEMP},
-	{"rdx", 0, TEMP},
-	{"rcx", 0, TEMP},
-	{"r8", 0, TEMP},
-	{"r9", 0, TEMP},
-	{"r11", 0, TEMP},
-	{"rbx", 0, TEMP},
-	{"rax", 0, TEMP}
+	{"rdi", 0, 0, PARAM},
+	{"rsi", 0, 0, TEMP},
+	{"rdx", 0, 0, TEMP},
+	{"rcx", 0, 0, TEMP},
+	{"r8", 0, 0, TEMP},
+	{"r9", 0, 0, TEMP},
+	{"r11", 0, 0, TEMP},
+	{"rbx", 0, 0, TEMP},
+	{"rax", 0, 0, TEMP}
 };
 
 struct reg_map all_map[] = 
@@ -70,6 +71,63 @@ struct list * reg_init (struct list *l)
 		}
 	}
 	return l;
+}
+
+int reg_is_param (char *reg)
+{
+	int i;
+	int reg_size =  sizeof (all_regs)/ sizeof (struct reg);
+	if (!reg)
+		return 0;
+
+	for (i=0; i<reg_size; i++)
+	{
+		if (strcmp (reg, all_regs[i].name) == 0)
+		{
+			if (all_regs[i].type == PARAM)
+				return 1;
+			else 
+				return 0;
+		}
+	}
+	return 0;
+}
+
+void reg_set_signal (char *reg)
+{
+	int i;
+	int reg_size = sizeof (all_regs)/sizeof (struct reg);
+	if (!reg)
+		return;
+	for (i=0; i<reg_size; i++)
+	{
+		if (strcmp (reg, all_regs[i].name) == 0)
+		{
+			all_regs[i].signal = 1;
+		}
+	}
+}
+
+int reg_get_signal (char *reg)
+{
+	int i; 
+	int reg_size = sizeof (all_regs)/sizeof (struct reg);
+	if (!reg)
+		return -1;
+
+	for (i=0; i<reg_size; i++)
+	{
+		if (strcmp (reg, all_regs[i].name) == 0)
+		{
+			return all_regs[i].signal;
+		}
+	}
+	return -1;
+}
+
+int get_label_nr ()
+{
+	return local_labels++;
 }
 
 char *get_label ()
@@ -169,6 +227,7 @@ void freereg(char * reg)
 	{
 		if (strcmp (reg, all_regs[i].name) == 0)
 			all_regs[i].used = 0;
+			all_regs[i].signal = 0;
 	}
 }
 
@@ -190,6 +249,6 @@ void reg_dump ()
 	int i;
 	for (i=0; i<NR_REGS; i++)
 	{
-		printf ("name: '%s', used: %d, type: '%s'\n", all_regs[i].name, all_regs[i].used, all_regs[i].type?"TEMP":"PARAM");
+		printf ("name: '%s', used: %d, type: '%s', signal: '%d'\n", all_regs[i].name, all_regs[i].used, all_regs[i].type?"TEMP":"PARAM", all_regs[i].signal);
 	}
 }
