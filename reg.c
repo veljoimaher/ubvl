@@ -130,6 +130,11 @@ int get_label_nr ()
 	return local_labels++;
 }
 
+int next_label_nr ()
+{
+	return local_labels;
+}
+
 char *get_label ()
 {
         int i;
@@ -236,11 +241,13 @@ void freeallreg ()
 	int i;
 	all_regs[0].used = 1;
 	all_regs[0].type = PARAM;
+	all_regs[0].signal = 0;
 
 	for (i=1; i<NR_REGS; i++)
 	{
 		all_regs[i].type = TEMP;
 		all_regs[i].used = 0;
+		all_regs[i].signal = 0;
 	}
 }
 
