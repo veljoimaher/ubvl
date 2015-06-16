@@ -13,7 +13,7 @@
 %}
 
 %start stmt
-%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 LET=20 DOT=21 ORPHAN=22 IN=23 FCALL=24
+%term NOT=1 HEAD=2 TAIL=3 ISNUM=4 ISLIST=5 ISFUN=6 ADD=7 SUB=8 MUL=9 AND=10 LESS=11 EQ=12 IDENT=13 NUM=14 ASGN=15 LASGN=16 THEN=17 ELSE=18 IF=19 LET=20 DOT=21 ORPHAN=22 IN=23 FCALL=24 THENELSE=25
 
 
 %%
@@ -41,8 +41,10 @@ ops: term
 term: reg				# 0 #
 term: rc				# 0 #
 
-term: IF(ops, term)		# 1 # bnode->reg = assembler_if (bnode); 
-term: THEN (term, term)			# 3 # printf ("THEN ELSE\n");
+term: IF(expr, expr)			# 2 # bnode->reg = assembler_if (bnode);
+term: THEN (expr)			# 1 # bnode->reg = assembler_then (bnode);
+term: ELSE (expr)			# 1 # bnode->reg = assembler_else (bnode);
+term: THENELSE (expr, expr)		# 0 # /* bnode->reg = assembler_thenelse (bnode); */
 
 term: ADD (reg, reg)			# 2 # bnode->reg = assembler_add_id_id (bnode); 
 term: ADD (reg, rc)			# 1 # bnode->reg = assembler_add_id_num (bnode); 
@@ -78,8 +80,6 @@ term: EQ (reg, reg)			# 2 # bnode->reg = assembler_eq_id_id (bnode);
 term: EQ (reg, rc)			# 1 # bnode->reg = assembler_eq_id_num (bnode); 
 term: EQ (rc, reg)			# 1 # bnode->reg = assembler_eq_num_id (bnode); 
 term: EQ (term, term)			# 3 # bnode->reg = assembler_eq (bnode); 
-
-reg: ORPHAN                             # 0 # bnode->reg = assembler_orphan (bnode);
 
 rc: num                                 # 0 #
 
