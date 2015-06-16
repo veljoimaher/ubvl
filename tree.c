@@ -24,7 +24,7 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
         tree->reg = "n/a";
         tree->val = 0;
         tree->name = "n/a";
-        tree->label = "n/a";
+        tree->label = -1;
 
         /* treenode_dump (tree); */
         return tree;
@@ -99,7 +99,7 @@ void tree_dump (struct treenode *t)
 {
         if (t != NULL)
         {
-                printf ("op: %d, name: %s, val: %d, reg: %s\n", t->op, t->name, t->val, t->reg);
+                printf ("op: %d, name: %s, val: %d, reg: %s, label: %d\n", t->op, t->name, t->val, t->reg, t->label);
 
                 if (LEFT_CHILD(t) != NULL)
                 {
@@ -110,6 +110,5 @@ void tree_dump (struct treenode *t)
                 {
                         tree_dump (RIGHT_CHILD(t));
                 }
-
         }
 }
