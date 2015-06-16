@@ -37,7 +37,7 @@ int cnt = 0;
 @autosyn let tn
 @attributes { char *name; } ident
 @attributes { struct list *variable; struct list *let; struct treenode *tn; struct treenode *var; } LetExpr 
-@attributes { struct list *variable; struct treenode *tn; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm
+@attributes { struct list *variable; struct treenode *tn; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm ThenExpr ElseExpr
 @attributes { struct list *idef; struct list *sdef; struct treenode *tn; } Def Lambda
 @attributes { struct list *idef; } Program
 @attributes { int val; } num
@@ -68,7 +68,7 @@ Def             : ident '=' Lambda
                                 @i @Lambda.idef@ = @Def.idef@;
                                 @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
 				@codegen func_header (@ident.name@);
-				@codegen invoke_burm (@Def.tn@);
+				@codegen invoke_burm (@Def.tn@); 
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
@@ -78,15 +78,16 @@ Lambda          : t_fun ident t_assign Expr t_end
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, reg_init(@Expr.variable@)), @Expr.tn@);
                         @}
                 ;
-Expr            : t_if Expr t_then Expr t_else Expr t_end
+Expr            : t_if Expr t_then ThenExpr t_else ElseExpr t_end
                         @{
                                 /* simply pass on what we already have */
                                 @i @Expr.1.variable@ = @Expr.0.variable@;
-                                @i @Expr.2.variable@ = @Expr.0.variable@;
-                                @i @Expr.3.variable@ = @Expr.0.variable@;
-				@i @Expr.0.tn@ = new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, @Expr.3.tn@));
-
-                                /* !!! Expr.0 treenode is incorrect. We will fix it for the next release !!! 
+                                @i @ThenExpr.variable@ = @Expr.0.variable@;
+                                @i @ElseExpr.variable@ = @Expr.0.variable@;
+				/* @i @Expr.0.tn@ = new_op_node (IF, new_op_node (THENELSE, @ThenExpr.tn@, @ElseExpr.tn@), @Expr.1.tn@); */
+				@i @Expr.0.tn@ = new_op_node (IF, @Expr.1.tn@, new_op_node (THENELSE, @ThenExpr.tn@, @ElseExpr.tn@));
+				
+				/* !!! Expr.0 treenode is incorrect. We will fix it for the next release !!! 
                                 @codegen (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                 @codegenif invoke_burm (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
                                 */
@@ -178,6 +179,21 @@ Expr            : t_if Expr t_then Expr t_else Expr t_end
                                 @i @Expr.0.tn@ = new_op_node (FCALL, @Expr.1.tn@, @Term.tn@); 
                         @}
                 ;
+
+ThenExpr	: Expr
+	 	@{
+                                @i @Expr.variable@ = @ThenExpr.variable@;
+				@i @ThenExpr.tn@ = new_op_node (THEN, @Expr.tn@, (struct treenode *)NULL);
+		@}
+		;
+
+ElseExpr	: Expr
+	 	@{
+                                @i @Expr.variable@ = @ElseExpr.variable@;
+				@i @ElseExpr.tn@ = new_op_node (ELSE, @Expr.tn@, (struct treenode *)NULL);
+		@}
+		;
+
 
 LetExpr         : t_let ident '=' Expr t_in Expr t_end
                         @{
