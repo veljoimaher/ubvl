@@ -171,12 +171,32 @@ char * newreg()
 		if ( all_regs[i].used == 0 )
 		{
 			all_regs[i].used = 1;
+			if (strcmp (all_regs[i].name, "rbx") == 0)
+				printf ("\tpush %%rbx\n");
 			return all_regs[i].name;
 		}
 
 	}
 	printf ("no new regs\n");
 	return "unavail";
+}
+
+int reg_used (char *reg)
+{
+	int i;
+	int reg_size = sizeof (all_regs)/sizeof (struct reg);
+
+	if (!reg)
+		return -1;
+
+	for (i=0; i<reg_size; i++)
+	{
+		if (strcmp (all_regs[i].name, reg) == 0)
+		{
+			return all_regs[i].used;
+		}
+	}
+	return -1;
 }
 
 char * get_reg_name (char *r, int type)
@@ -236,8 +256,12 @@ void freereg(char * reg)
 	for (i = 0; i<NR_REGS; i++)
 	{
 		if (strcmp (reg, all_regs[i].name) == 0)
+		{
 			all_regs[i].used = 0;
 			all_regs[i].signal = 0;
+                        if (strcmp (reg, "rbx") == 0)
+                                printf ("\tpop %%rbx\n");
+		}
 	}
 }
 

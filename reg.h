@@ -53,6 +53,6 @@ void reg_set_signal (char *reg);
 int reg_get_signal (char *reg);
 int next_label_nr ();
 int cur_label_nr ();
-
+int reg_used (char *reg);
 #endif
 

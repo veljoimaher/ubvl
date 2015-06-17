@@ -37,6 +37,9 @@ ops: IN(term, ops)                            # 1 # bnode->reg = assembler_in (b
 ops: FCALL(term, term)                            # 1 # bnode->reg = assembler_fcall (bnode);
 ops: term
 
+term: HEAD(expr)			# 1 # bnode->reg = assembler_head (bnode);
+term: TAIL(expr)			# 1 # bnode->reg = assembler_tail (bnode);
+
 term: reg				# 0 #
 term: rc				# 0 #
 
