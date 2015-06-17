@@ -5,7 +5,7 @@
 
 enum {
         NOT=1, HEAD, TAIL, ISNUM, ISLIST, ISFUN, ADD, SUB, MUL, AND, LESS, EQ, IDENT, NUM, ASGN,
-        LASGN, THEN, ELSE, IF, LET, DOT, ORPHAN, IN, FCALL, THENELSE
+        LASGN, THEN, ELSE, IF, LET, DOT, LETEXPR, IN, FCALL, THENELSE
 };
 
 #ifndef BURM
@@ -22,6 +22,11 @@ struct treenode {
         char *name;
         int val;
         int label;
+	int thenlabel;
+	int elselabel;
+	int thenendlabel;
+	int elseendlabel;
+	int endlabel;
 
 };
 typedef struct treenode treenode_ptr;
@@ -43,7 +48,7 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
 struct treenode *new_id_node (char *id_name, struct list *ids);
 struct treenode *new_num_node (long num);
 char *get_node_reg (char *id_name, struct list *ids);
-
+struct treenode *new_if_node (int op, struct treenode *l, struct treenode *t, struct treenode *e);
 void treenode_dump (struct treenode *tn);
 void invoke_burm (NODEPTR_TYPE root);
 void tree_dump (struct treenode *t);

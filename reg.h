@@ -52,6 +52,7 @@ struct treenode *reg_assign (struct treenode *tn, char *reg);
 void reg_set_signal (char *reg);
 int reg_get_signal (char *reg);
 int next_label_nr ();
+int cur_label_nr ();
 
 #endif
 

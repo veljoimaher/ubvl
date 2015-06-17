@@ -668,8 +668,12 @@ char *assembler_not (struct treenode *tn)
 char *assembler_head (struct treenode *tn)
 {
         char *reg = newreg ();
-	printf ("\tbt $0, %%%s\n", tn->left->reg);
-        printf ("\tjnc raisesig\n");
+	if (reg_is_param (tn->left->reg) && reg_get_signal (tn->left->reg) == 0)
+	{
+		reg_set_signal (tn->left->reg);
+		printf ("\tbt $0, %%%s\n", tn->left->reg);
+        	printf ("\tjnc raisesig\n");
+	}
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq $1, %%%s\n", reg);
 	printf ("\tmovq 0(%%%s), %%%s\n", reg, reg);
@@ -680,8 +684,12 @@ char *assembler_head (struct treenode *tn)
 char *assembler_tail (struct treenode *tn)
 {
 	char *reg = newreg ();
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
-        printf ("\tjnc raisesig\n");
+	if (reg_is_param (tn->left->reg) && reg_get_signal (tn->left->reg) == 0)
+        {
+                reg_set_signal (tn->left->reg);
+                printf ("\tbt $0, %%%s\n", tn->left->reg);
+                printf ("\tjnc raisesig\n");
+        }
         printf ("\tmov %%%s, %%%s\n", tn->left->reg, reg);
         printf ("\tsubq $1, %%%s\n", reg);
 	printf ("\tmovq 8(%%%s), %%%s\n", reg, reg);
@@ -704,13 +712,13 @@ char *assembler_isnum (struct treenode *tn)
 char *assembler_islist (struct treenode *tn)
 {
         char *reg = newreg ();
+	int label = get_label_nr ();
         printf ("\txor %%%s, %%%s\n", reg, reg);
-        printf ("\tbt $0, %%%s\n", tn->left->reg);
-        printf ("\tjnc notlist\n");
-        printf ("\tmovq $1, %%%s\n", reg);
-        
-        printf ("notlist:\n");
-        printf ("\tshl $1, %%%s\n", reg);
+                printf ("\tbt $0, %%%s\n", tn->left->reg);
+                printf ("\tjnc .L%i\n", label);
+
+        printf ("\tmovq $2, %%%s\n", reg);
+        printf (".L%i:\n", label);
         return reg;
 
 }
@@ -723,7 +731,7 @@ char *assembler_isfun (struct treenode *tn)
         return l;
 
 }
-
+/*
 char *assembler_if (struct treenode *tn)
 {
         char *reg = newreg ();
@@ -731,9 +739,6 @@ char *assembler_if (struct treenode *tn)
 	int end_label;
 	tn->label = get_label_nr ();
 
-	/*
-	assembler_emit_signal (tn);
-	*/
 	if (tn->left->op == IDENT)
 	{
 		if (reg_is_param (tn->left->reg) && reg_get_signal (tn->left->reg) == 0)
@@ -779,12 +784,13 @@ char *assembler_if (struct treenode *tn)
 		end_label = get_label_nr ();
                 printf ("\tje .L%i\n", tn->right->left->label);
 
-                if (tn->right->right->left->op == NUM)
+                if (tn->right->left->left->op == NUM)
                        printf ("\tshl $1, %%%s\n", tn->right->left->reg);
+
                 printf ("\tmovq %%%s, %%%s\n", tn->right->left->reg, reg);
                 printf ("\tjmp .L%i\n", end_label);
                 printf (".L%i:\n", tn->label);
-                if (tn->right->left->left->op == NUM)
+                if (tn->right->right->left->op == NUM)
                        printf ("\tshl $1, %%%s\n", tn->right->right->reg);
                 printf ("\tmovq %%%s, %%%s\n", tn->right->right->reg, reg);
 
@@ -794,18 +800,56 @@ char *assembler_if (struct treenode *tn)
 	}
         return reg;
 }
+*/
+
+void assembler_begin_if (struct treenode *ifn, struct treenode *l, struct treenode *r)
+{
+	/* printf ("left:\n");
+	tree_dump (l);
+	printf ("right: \n");
+	tree_dump (r); */
+
+/* printf (".L%i\n", get_label_nr ()); */
+	printf ("\tjmp .L%i\n", r->label);
+	printf (".L%i:\n", ifn->label);
+}
+
+char *assembler_if (struct treenode *tn)
+{
+	char *reg = newreg ();
+	printf ("\n");
+	printf ("\tcmpq $0, %%%s\n", tn->left->reg);
+	printf ("\tje .L%i\n", tn->thenlabel);
+	printf ("\tjmp .L%i\n", tn->label);
+
+	printf (".L%i:\n", tn->elseendlabel);
+	if (tn->right->left->left->op == NUM)
+		printf ("\tshl $1, %%%s\n", tn->right->left->reg);
+	printf ("\tmovq %%%s, %%%s\n", tn->right->left->reg, reg);
+	printf ("\tjmp .L%i\n", tn->endlabel);
+
+	printf (".L%i:\n", tn->thenendlabel);
+	if (tn->right->right->left->op == NUM)
+		printf ("\tshl $1, %%%s\n", tn->right->right->reg);
+	printf ("\tmovq %%%s, %%%s\n", tn->right->right->reg, reg);
+
+	/* printf ("\tmovq %%%s, %%%s\n", tn-> */
+	printf (".L%i:\n", tn->endlabel);
+	return reg;
+}
+
 char *assembler_then (struct treenode *tn)
 {
-	tn->label = get_label_nr ();
-	printf ("\tjmp .L%i\n", next_label_nr ());
+	/* tn->label = get_label_nr (); */
+	printf ("\tjmp .L%i\n", tn->thenendlabel);
 	printf (".L%i:\n", tn->label);
 	return tn->left->reg;
 }
 
 char *assembler_else (struct treenode *tn)
 {
-	tn->label = get_label_nr ();
-	printf ("\tjmp .L%i\n", next_label_nr ());
+	/* tn->label = get_label_nr (); */
+	printf ("\tjmp .L%i\n", tn->elseendlabel);
 	printf (".L%i:\n", tn->label);
 	return tn->left->reg;
 }
@@ -817,43 +861,17 @@ char *assembler_thenelse (struct treenode *tn)
 
 char *assembler_let (struct treenode *tn)
 {
-        /*if (tn->left)
-        printf ("let:\n");
-                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
-        if (tn->right)
-                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
-        */
-
-        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\n");
+        printf ("\tmovq %%%s, %%%s\n", tn->left->reg, tn->right->reg);
         return tn->left->reg;
 }
 
 char *assembler_in (struct treenode *tn)
 {
-        /*if (tn->left)
-        printf ("in:\n");
-                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
-        if (tn->right)
-                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
-
-        */
-
-        printf ("\tmovq %%%s, %%%s\n", tn->right->reg, tn->left->reg);
-        printf ("\n");
-        printf ("\tjmp LBL%d\n", lbl);
-        return tn->left->reg;
+        return tn->right->reg;
 }
 
 char *assembler_fcall (struct treenode *tn)
 {
-        /*if (tn->left)
-                printf ("left # name: %s, reg: %%%s\n", tn->left->name, tn->left->reg);
-        if (tn->right)
-                printf ("right # name: %s, reg: %%%s\n", tn->right->name, tn->right->reg);
-                */
-        
-
         printf ("\n");
         printf ("\tmovq %%%s, %%rdi\n", tn->right->reg); 
         printf ("\tjmp %s\n", tn->left->name);

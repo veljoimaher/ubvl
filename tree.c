@@ -25,9 +25,19 @@ struct treenode *new_op_node (int op, struct treenode *left, struct treenode *ri
         tree->val = 0;
         tree->name = "n/a";
         tree->label = -1;
+	tree->thenlabel = -1;
+	tree->elselabel = -1;
+	tree->endlabel = -1;
 
         /* treenode_dump (tree); */
         return tree;
+}
+
+struct treenode *new_if_node (int op, struct treenode *l, struct treenode *t, struct treenode *e)
+{
+	struct treenode *elsetree = new_op_node (THENELSE, t, e);
+	struct treenode *tree = new_op_node (op, elsetree, l);
+	return tree;
 }
 
 struct treenode *new_id_node (char *id_name, struct list *ids)
@@ -99,7 +109,7 @@ void tree_dump (struct treenode *t)
 {
         if (t != NULL)
         {
-                printf ("op: %d, name: %s, val: %d, reg: %s, label: %d\n", t->op, t->name, t->val, t->reg, t->label);
+                printf ("op: %d, name: %s, val: %d, reg: %s, label: %d, thenlabel: %d, thenendlabel: %d, elselabel: %d, endlabel: %d\n", t->op, t->name, t->val, t->reg, t->label, t->thenlabel, t->thenendlabel, t->elselabel, t->endlabel);
 
                 if (LEFT_CHILD(t) != NULL)
                 {

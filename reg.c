@@ -135,6 +135,11 @@ int next_label_nr ()
 	return local_labels;
 }
 
+int cur_label_nr ()
+{
+	return local_labels-1;
+}
+
 char *get_label ()
 {
         int i;

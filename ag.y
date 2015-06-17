@@ -38,6 +38,7 @@ int cnt = 0;
 @attributes { char *name; } ident
 @attributes { struct list *variable; struct list *let; struct treenode *tn; struct treenode *var; } LetExpr 
 @attributes { struct list *variable; struct treenode *tn; } Expr Term Ops DotTerm MulTerm PlusTerm AndTerm ThenExpr ElseExpr
+@attributes { struct list *variable; struct treenode *tn; struct treenode *exthen; struct treenode *exelse; } IfExpr
 @attributes { struct list *idef; struct list *sdef; struct treenode *tn; } Def Lambda
 @attributes { struct list *idef; } Program
 @attributes { int val; } num
@@ -67,8 +68,8 @@ Def             : ident '=' Lambda
                                 @i @Def.sdef@ = insert_elem (DEFINITION, @Lambda.sdef@, @ident.name@, 10); 
                                 @i @Lambda.idef@ = @Def.idef@;
                                 @i @Def.tn@ = new_op_node (ASGN, new_id_node (@ident.name@, @Lambda.idef@), @Lambda.tn@);
-				@codegen func_header (@ident.name@);
-				@codegen invoke_burm (@Def.tn@); 
+				@codegenpre func_header (@ident.name@);
+				@codegenpre @revorder(1) invoke_burm (@Def.tn@); 
                         @}
                 ;
 Lambda          : t_fun ident t_assign Expr t_end
@@ -78,57 +79,11 @@ Lambda          : t_fun ident t_assign Expr t_end
                                 @i @Lambda.tn@ = new_op_node(LASGN, new_id_node (@ident.name@, reg_init(@Expr.variable@)), @Expr.tn@);
                         @}
                 ;
-Expr            : t_if Expr t_then ThenExpr t_else ElseExpr t_end
-                        @{
-                                /* simply pass on what we already have */
-                                @i @Expr.1.variable@ = @Expr.0.variable@;
-                                @i @ThenExpr.variable@ = @Expr.0.variable@;
-                                @i @ElseExpr.variable@ = @Expr.0.variable@;
-				/* @i @Expr.0.tn@ = new_op_node (IF, new_op_node (THENELSE, @ThenExpr.tn@, @ElseExpr.tn@), @Expr.1.tn@); */
-				@i @Expr.0.tn@ = new_op_node (IF, @Expr.1.tn@, new_op_node (THENELSE, @ThenExpr.tn@, @ElseExpr.tn@));
+Expr            : 
+		IfExpr
+			@{
 				
-				/* !!! Expr.0 treenode is incorrect. We will fix it for the next release !!! 
-                                @codegen (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
-                                @codegenif invoke_burm (new_op_node (IF, @Expr.1.tn@, new_op_node (THEN, @Expr.2.tn@, new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
-                                */
-				/*
-                                @codegen printf ("LBL%s:\n", (@Expr.1.tn@->name = get_label ()));
-                                @i @Expr.0.tn@ = new_op_node (ORPHAN, @Expr.1.tn@, (struct treenode *)NULL);
-                                @codegen {
-                                                invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
-                                                @Expr.2.tn@ = new_op_node (THEN, @Expr.2.tn@, (struct treenode *)NULL);
-                                                reg_assign (@Expr.2.tn@, @Expr.1.tn@->reg);
-                                                invoke_burm (@Expr.2.tn@);
-                                                
-                                                @Expr.3.tn@ = new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL);
-                                                reg_assign (@Expr.3.tn@, @Expr.1.tn@->reg);
-                                                invoke_burm (@Expr.3.tn@);
-                                }
-*/
-                               /* 
-                                @codegen {
-                                                invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
-                                                printf ("\tjnz LBL%s\n", (@Expr.1.tn@->label = get_label ()));
-                                                invoke_burm (new_op_node (THEN, @Expr.2.tn@, (struct treenode *)NULL));
-                                                printf ("\tshr $1, %%%s\n", @Expr.2.tn@->reg);
-                                                printf ("\tmovq %%%s, %%%s\n", @Expr.2.tn@->reg, @Expr.1.tn@->reg);
-                                                printf ("\tjmp LBL0\n");
-                                                printf ("LBL%s:\n", @Expr.1.tn@->label);
-                                                invoke_burm (new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL));
-                                                printf ("\tshr $1, %%%s\n", @Expr.3.tn@->reg);
-                                                printf ("\tmovq %%%s, %%%s\n", @Expr.3.tn@->reg, @Expr.1.tn@->reg);
-                                                printf ("\tjmp LBL0\n");
-                                }
-                                */
-                                /*@codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, (struct treenode *)NULL));
-                                @codegen printf ("%s:\n", lbl);
-                                @codegen invoke_burm (new_op_node (THEN, @Expr.2.tn@, (struct treenode *)NULL));
-                                @codegen invoke_burm (new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL));
-                                *//*@codegen invoke_burm (new_op_node (IF, @Expr.1.tn@, 
-                                                                   new_op_node (THEN, @Expr.2.tn@, 
-                                                                                       new_op_node (ELSE, @Expr.3.tn@, (struct treenode *)NULL))));
-                                                                                       */
-                        @}
+			@}
                 | Lambda
                         @{
                                 /* simply pass on what we already have */
@@ -179,20 +134,37 @@ Expr            : t_if Expr t_then ThenExpr t_else ElseExpr t_end
                                 @i @Expr.0.tn@ = new_op_node (FCALL, @Expr.1.tn@, @Term.tn@); 
                         @}
                 ;
+IfExpr		: t_if Expr t_then Expr t_else Expr t_end
+                        @{
+                                /* simply pass on what we already have */
+                                @i @Expr.0.variable@ = @IfExpr.0.variable@;
+                                @i @Expr.1.variable@ = @IfExpr.0.variable@;
+                                @i @Expr.2.variable@ = @IfExpr.0.variable@;
+                
+				@i @IfExpr.exelse@ = new_op_node (ELSE, @Expr.2.tn@, (struct treenode *)NULL);
+                                @i @IfExpr.exthen@ = new_op_node (THEN, @Expr.1.tn@, (struct treenode *)NULL);
 
-ThenExpr	: Expr
-	 	@{
-                                @i @Expr.variable@ = @ThenExpr.variable@;
-				@i @ThenExpr.tn@ = new_op_node (THEN, @Expr.tn@, (struct treenode *)NULL);
-		@}
-		;
+				@i @IfExpr.tn@ = new_op_node (IF, @Expr.0.tn@, new_op_node (THENELSE, @IfExpr.exelse@, @IfExpr.exthen@));
+                                @codegen @IfExpr.tn@->label = get_label_nr ();
+                                @codegen @IfExpr.exthen@->label = get_label_nr ();
+                                @codegen @IfExpr.exelse@->label = get_label_nr ();
+ 
+				@codegen @IfExpr.tn@->thenlabel = @IfExpr.exthen@->label;
+                                @codegen @IfExpr.tn@->elselabel = @IfExpr.exelse@->label;
+				@codegen @IfExpr.tn@->thenendlabel = get_label_nr ();
+				@codegen @IfExpr.tn@->elseendlabel = get_label_nr ();
+                                @codegen @IfExpr.tn@->endlabel = get_label_nr ();
+                                @codegen @IfExpr.exthen@->endlabel = @IfExpr.tn@->endlabel;
+                                @codegen @IfExpr.exelse@->endlabel = @IfExpr.tn@->endlabel;
+				@codegen @IfExpr.exthen@->thenendlabel = @IfExpr.tn@->thenendlabel;
+				@codegen @IfExpr.exelse@->thenendlabel = @IfExpr.tn@->thenendlabel;
+				@codegen @IfExpr.exthen@->elseendlabel = @IfExpr.tn@->elseendlabel;
+				@codegen @IfExpr.exelse@->elseendlabel = @IfExpr.tn@->elseendlabel;
 
-ElseExpr	: Expr
-	 	@{
-                                @i @Expr.variable@ = @ElseExpr.variable@;
-				@i @ElseExpr.tn@ = new_op_node (ELSE, @Expr.tn@, (struct treenode *)NULL);
-		@}
-		;
+				@codegenpre @revorder(1) assembler_begin_if (@IfExpr.tn@, @IfExpr.exthen@, @IfExpr.exelse@);
+                                @codegenpre @revorder(1) invoke_burm (@IfExpr.exthen@);
+                                @codegenpre @revorder(1) invoke_burm (@IfExpr.exelse@);
+                       @}
 
 
 LetExpr         : t_let ident '=' Expr t_in Expr t_end
@@ -205,8 +177,8 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
                                 @i @Expr.1.variable@ = insert_elem (VARIABLE, @Expr.variable@, @ident.name@, 4);
 
                                 @i @LetExpr.var@ = new_id_node (@ident.name@, @Expr.1.variable@);
-                                @codegen printf ("LBL%s:\n", @ident.name@);        
-                                @i @LetExpr.tn@ = new_op_node (ORPHAN, @LetExpr.var@, (struct treenode *)NULL);
+                                @i @LetExpr.tn@ = new_op_node (LETEXPR, new_op_node (LET, @Expr.0.tn@, @LetExpr.var@), @Expr.1.tn@);
+				/*
                                 @codegen
                                 {
                                         invoke_burm (new_op_node (LET, @LetExpr.var@, @Expr.0.tn@));                                       
@@ -215,6 +187,7 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
                                 {
                                         invoke_burm (new_op_node (IN, @LetExpr.var@, @Expr.1.tn@));
                                 }
+				*/
                         @}
                 ;
 
