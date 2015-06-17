@@ -178,16 +178,6 @@ LetExpr         : t_let ident '=' Expr t_in Expr t_end
 
                                 @i @LetExpr.var@ = new_id_node (@ident.name@, @Expr.1.variable@);
                                 @i @LetExpr.tn@ = new_op_node (LETEXPR, new_op_node (LET, @Expr.0.tn@, @LetExpr.var@), @Expr.1.tn@);
-				/*
-                                @codegen
-                                {
-                                        invoke_burm (new_op_node (LET, @LetExpr.var@, @Expr.0.tn@));                                       
-                                }
-                                @codegen
-                                {
-                                        invoke_burm (new_op_node (IN, @LetExpr.var@, @Expr.1.tn@));
-                                }
-				*/
                         @}
                 ;
 
